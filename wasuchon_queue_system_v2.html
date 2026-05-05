@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ระบบเรียกคิว | คลินิกผิวหนังหมอวสุชล</title>
+  <style>
+    :root{
+      --blue:#0b64c0;--blue2:#084a8f;--sky:#eaf4ff;--bg:#f6f9fc;--card:#ffffff;
+      --text:#14213d;--muted:#64748b;--line:#dbe7f3;--green:#12a150;--orange:#f59e0b;--red:#dc2626;--purple:#7c3aed;
+      --shadow:0 14px 35px rgba(15,23,42,.08);--radius:20px;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#f4fbff,#f8fafc);color:var(--text)}
+    button,input,select,textarea{font-family:inherit} button{cursor:pointer;border:none}
+    .app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.side{background:#fff;border-right:1px solid var(--line);padding:18px;position:sticky;top:0;height:100vh;overflow:auto}.brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--blue),#3fb7ff);display:grid;place-items:center;color:#fff;font-weight:800;font-size:24px;box-shadow:var(--shadow)}.brand h1{font-size:17px;margin:0;line-height:1.35}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}.roleBox{background:var(--sky);border:1px solid #cbe7ff;border-radius:18px;padding:12px;margin:12px 0}.roleBox label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}.roleBox select,.roleBox input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:8px}.nav{display:grid;gap:8px;margin-top:14px}.nav button{text-align:left;padding:13px 14px;border-radius:14px;background:#fff;color:var(--text);border:1px solid var(--line);font-weight:700}.nav button.active{background:var(--blue);color:#fff;border-color:var(--blue)}.main{padding:22px;overflow:auto}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}.topbar h2{margin:0;font-size:24px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:var(--muted);font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green)}.grid{display:grid;gap:16px}.grid.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.card h3{margin:0 0 12px;font-size:18px}.muted{color:var(--muted)}.bigQueue{font-size:86px;font-weight:900;letter-spacing:2px;color:var(--blue);line-height:1;text-align:center;margin:20px 0}.btn{border-radius:14px;padding:12px 16px;font-weight:800;background:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(11,100,192,.2)}.btn:hover{background:var(--blue2)}.btn.secondary{background:#fff;color:var(--blue);border:1px solid #bfe0ff;box-shadow:none}.btn.green{background:var(--green)}.btn.orange{background:var(--orange)}.btn.red{background:var(--red)}.btn.purple{background:var(--purple)}.btn.gray{background:#475569}.btnRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.form{display:grid;gap:10px}.form label{font-size:13px;color:var(--muted);font-weight:700}.form input,.form select,.form textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:#fff;font-size:15px}.form textarea{min-height:86px;resize:vertical}.queueList{display:grid;gap:10px}.queueItem{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:16px;background:#fff}.qNo{font-size:25px;font-weight:900;color:var(--blue)}.status{font-size:12px;font-weight:800;padding:6px 9px;border-radius:999px;background:#eef2ff;color:#3730a3}.status.waitReg{background:#fff7ed;color:#c2410c}.status.regCalling{background:#e0f2fe;color:#0369a1}.status.waitDoctor{background:#f0fdf4;color:#15803d}.status.doctorCalling{background:#f5f3ff;color:#6d28d9}.status.done{background:#ecfdf5;color:#047857}.status.skip{background:#fef2f2;color:#b91c1c}.kpi{display:flex;align-items:center;justify-content:space-between}.kpi .num{font-size:34px;font-weight:900;color:var(--blue)}table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;font-size:13px;vertical-align:top}th{background:var(--sky);font-weight:900;color:#123}tr:last-child td{border-bottom:none}.monitor{background:#041426;color:#fff;min-height:100vh;padding:26px}.monitor .title{display:flex;justify-content:space-between;align-items:center}.monitor h1{font-size:36px;margin:0}.monitorGrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:20px}.monitorCard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:28px;padding:26px;text-align:center}.monitorCard h2{font-size:30px;margin:0 0 16px}.monitorNo{font-size:120px;font-weight:1000;color:#68c6ff;line-height:1}.monitorSub{font-size:24px;color:#d5e8ff}.hidden{display:none!important}.previewMask{position:fixed;inset:0;background:rgba(2,6,23,.58);display:grid;place-items:center;z-index:1000}.preview{width:min(430px,92vw);background:#fff;border-radius:26px;padding:24px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.28)}.ticket{width:250px;margin:10px auto;border:1px dashed #94a3b8;padding:18px;background:#fff}.ticket h4{margin:0 0 6px}.ticket .num{font-size:62px;font-weight:900}.ticket p{margin:5px 0;color:#334155}.hint{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:13px}.apiBox{font-size:12px;word-break:break-all}.onlyPrint{display:none}.loginNote{font-size:12px;color:var(--muted);line-height:1.5}.mini{font-size:12px;padding:8px 10px;border-radius:10px}.dateLine{font-size:13px;color:var(--muted);margin-top:3px}
+    @media(max-width:920px){.app{grid-template-columns:1fr}.side{height:auto;position:relative}.grid.cols2,.grid.cols3,.monitorGrid{grid-template-columns:1fr}.main{padding:14px}.bigQueue{font-size:64px}.monitorNo{font-size:76px}.monitor h1{font-size:24px}}
+    @media print{body *{visibility:hidden}.printArea,.printArea *{visibility:visible}.printArea{position:absolute;left:0;top:0;width:72mm;padding:2mm}.noPrint{display:none!important}.onlyPrint{display:block}.ticket{width:68mm;border:none;padding:0;margin:0;text-align:center}.ticket .num{font-size:44px}.ticket p,.ticket h4{font-size:12px}}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+const CLINIC_NAME = 'คลินิกผิวหนังหมอวสุชล';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxCJayzpyoXwW_4_y7Di9rntsBLzx5eSQsKA2tQ40KSLOjbmiqi_FwByGEdcyYgVLif/exec';
+const STORAGE_KEY = 'wasuchon_queue_system_v1';
+const ROLES = { patient:'คนไข้', register:'ลงทะเบียน', doctor:'แพทย์', monitor:'จอแสดงคิว', admin:'Admin' };
+const STATUS_TEXT = {
+  waiting_registration:'รอลงทะเบียน', registration_calling:'กำลังเรียกลงทะเบียน', skipped_registration:'ข้ามลงทะเบียน',
+  waiting_doctor:'รอพบแพทย์', doctor_calling:'กำลังเรียกพบแพทย์', skipped_doctor:'ข้ามพบแพทย์', done:'เสร็จสิ้น', booked:'จองหัตถการ', no_show:'ไม่มา', cancelled:'ยกเลิก'
+};
+const STATUS_CLASS = {waiting_registration:'waitReg',registration_calling:'regCalling',waiting_doctor:'waitDoctor',doctor_calling:'doctorCalling',done:'done',skipped_registration:'skip',skipped_doctor:'skip',no_show:'skip'};
+let state = loadState();
+let currentRole = localStorage.getItem('wasuchon_role') || 'patient';
+let currentPage = localStorage.getItem('wasuchon_page') || 'patient';
+let apiStatus = 'กำลังเชื่อมต่อ Google Sheet...';
+let previewTimer = null;
+let thaiFemaleVoice = null;
+function loadThaiFemaleVoice(){
+  try{
+    const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
+    const th = voices.filter(v => String(v.lang||'').toLowerCase().startsWith('th') || /thai|ไทย/i.test(v.name||''));
+    thaiFemaleVoice = th.find(v => /female|woman|หญิง|sirilak|lek|kanya|google/i.test(v.name||'')) || th[0] || voices.find(v => /female|woman/i.test(v.name||'')) || null;
+  }catch(e){ thaiFemaleVoice = null; }
+}
+if ('speechSynthesis' in window){ loadThaiFemaleVoice(); speechSynthesis.onvoiceschanged = loadThaiFemaleVoice; }
+
+function today(){ return new Date().toISOString().slice(0,10); }
+function nowTime(){ return new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}); }
+function nowDateTime(){ return new Date().toISOString(); }
+function thaiDate(d=today()){ return new Date(d+'T00:00:00').toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); }
+function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function escapeHtml(s=''){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function normalizeDate(){
+  if(!state.date || state.date !== today()){
+    state.date = today(); state.counters = {A:0,B:0};
+    state.queues = (state.queues||[]).filter(q=>q.date===today());
+    saveState('auto_reset');
+  }
+}
+function defaultState(){ return {date:today(), counters:{A:0,B:0}, queues:[], bookings:[], users:[{id:uid(),name:'Admin',role:'admin',pin:'1234'}], logs:[]}; }
+function loadState(){ try{return {...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}}catch(e){return defaultState()} }
+function saveLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function log(action,detail){ state.logs.unshift({id:uid(),at:nowDateTime(),time:nowTime(),date:today(),role:currentRole,action,detail}); state.logs=state.logs.slice(0,800); }
+async function saveState(action='save', shouldRender=true){
+  normalizeLight(); saveLocal(); if(shouldRender) render();
+  try{ await apiSend('saveAll',{state,action}); apiStatus='เชื่อม Google Sheet แล้ว'; }
+  catch(e){ apiStatus='โหมดสำรองในเครื่อง: Google Sheet ยังไม่ตอบกลับ'; }
+}
+function normalizeLight(){ if(!state.users||!state.users.length) state.users=defaultState().users; if(!state.bookings) state.bookings=[]; if(!state.queues) state.queues=[]; if(!state.logs) state.logs=[]; if(!state.counters) state.counters={A:0,B:0}; }
+async function apiSend(action,payload={}){
+  const form = new FormData(); form.append('action',action); form.append('payload',JSON.stringify(payload));
+  const res = await fetch(API_URL,{method:'POST',body:form});
+  const txt = await res.text();
+  try{return JSON.parse(txt)}catch(e){return {ok:true,text:txt}}
+}
+async function apiLoad(){
+  try{
+    const res = await fetch(API_URL+'?action=getAll&t='+Date.now());
+    const data = await res.json();
+    const incoming = data.state || data.data || data;
+    if(incoming && incoming.queues && incoming.bookings){ state = {...defaultState(), ...incoming}; normalizeDate(); saveLocal(); apiStatus='เชื่อม Google Sheet แล้ว'; render(); }
+    else apiStatus='เชื่อมต่อได้ แต่รูปแบบข้อมูลไม่ตรงกับระบบ';
+  }catch(e){ apiStatus='โหมดสำรองในเครื่อง: Google Sheet ยังไม่ตอบกลับ'; render(); }
+}
+function allowedPages(){
+  if(currentRole==='patient') return ['patient'];
+  if(currentRole==='register') return ['register','dashboard','booking','history'];
+  if(currentRole==='doctor') return ['doctor','dashboard','history'];
+  if(currentRole==='monitor') return ['monitor'];
+  return ['patient','register','doctor','monitor','dashboard','booking','history','admin'];
+}
+function setRole(r){ currentRole=r; localStorage.setItem('wasuchon_role',r); const pages=allowedPages(); if(!pages.includes(currentPage)) currentPage=pages[0]; localStorage.setItem('wasuchon_page',currentPage); render(); }
+function go(p){ currentPage=p; localStorage.setItem('wasuchon_page',p); render(); }
+function getQueues(filter={}){ return state.queues.filter(q=>(!filter.date||q.date===filter.date)); }
+function activeQ(status){ return getQueues({date:today()}).filter(q=>q.status===status).sort((a,b)=>a.createdAt.localeCompare(b.createdAt)); }
+function lastBy(statuses){ return getQueues({date:today()}).filter(q=>statuses.includes(q.status)).sort((a,b)=>(b.updatedAt||b.createdAt).localeCompare(a.updatedAt||a.createdAt))[0]; }
+function createQueue(prefix, extra={}){
+  normalizeDate(); state.counters[prefix]=(state.counters[prefix]||0)+1;
+  const qNo = prefix + pad(state.counters[prefix]);
+  const q = {id:uid(), no:qNo, prefix, date:today(), createdAt:nowDateTime(), updatedAt:nowDateTime(), time:nowTime(), status:'waiting_registration', gender:extra.gender||'', procedure:extra.procedure||'', source:extra.source||'walkin', bookingTime:extra.bookingTime||'', patientName:extra.patientName||'', note:extra.note||''};
+  state.queues.push(q); log('ออกคิว', `${qNo} ส่งไปโต๊ะลงทะเบียนอัตโนมัติ`); saveState('create_queue'); showPreview(q); return q;
+}
+function showPreview(q){
+  clearTimeout(previewTimer);
+  const mask = document.createElement('div'); mask.className='previewMask noPrint'; mask.id='previewMask';
+  mask.innerHTML = `<div class="preview"><h3>รับบัตรคิวสำเร็จ</h3>${ticketHtml(q,true)}<p class="muted">หน้าต่างนี้จะปิดอัตโนมัติใน <b id="countdown">10</b> วินาที</p><div class="btnRow" style="justify-content:center"><button class="btn" onclick="window.print()">พิมพ์บัตรคิว</button><button class="btn secondary" onclick="closePreview()">ปิด</button></div></div>`;
+  document.body.appendChild(mask);
+  let n=10; previewTimer=setInterval(()=>{n--; const el=document.getElementById('countdown'); if(el)el.textContent=n; if(n<=0) closePreview();},1000);
+}
+function closePreview(){ clearInterval(previewTimer); const m=document.getElementById('previewMask'); if(m)m.remove(); }
+function ticketHtml(q, printArea=false){ return `<div class="ticket ${printArea?'printArea':''}"><h4>${CLINIC_NAME}</h4><div class="num">${q.no}</div><p>${q.prefix==='A'?'Walk in ตรวจ':'จองทำหัตถการ'}</p><p>${thaiDate(q.date)} เวลา ${q.time}</p><p>กรุณารอฟังประกาศเรียกคิว</p></div>`; }
+function speak(text){
+  try{
+    speechSynthesis.cancel();
+    loadThaiFemaleVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'th-TH';
+    if(thaiFemaleVoice) u.voice = thaiFemaleVoice;
+    u.rate = 0.86;
+    u.pitch = 1.18;
+    u.volume = 1;
+    setTimeout(()=>speechSynthesis.speak(u), 80);
+  }catch(e){ alert(text); }
+}
+function callNextRegistration(){ const q=activeQ('waiting_registration')[0] || activeQ('skipped_registration')[0]; if(!q) return alert('ยังไม่มีคิวรอลงทะเบียน'); callRegistration(q.id); }
+function callRegistration(id){ const q=state.queues.find(x=>x.id===id); if(!q)return; q.status='registration_calling'; q.updatedAt=nowDateTime(); q.regCalledAt=nowDateTime(); log('เรียกลงทะเบียน',q.no); saveState('call_registration'); speak(`ขอเชิญหมายเลข ${q.no} ที่โต๊ะลงทะเบียน ค่ะ`); }
+function repeatRegistration(){ const q=lastBy(['registration_calling']); if(q){ speak(`ขอเชิญหมายเลข ${q.no} ที่โต๊ะลงทะเบียน ค่ะ`); log('เรียกซ้ำลงทะเบียน',q.no); saveState('repeat_registration'); } }
+function skipRegistration(){ const q=lastBy(['registration_calling']); if(q){ q.status='skipped_registration'; q.updatedAt=nowDateTime(); log('ข้ามลงทะเบียน',q.no); saveState('skip_registration'); } }
+function sendToDoctor(id){ const q=state.queues.find(x=>x.id===id); if(!q)return; q.status='waiting_doctor'; q.updatedAt=nowDateTime(); q.registeredAt=nowDateTime(); log('ส่งเข้าห้องตรวจ',q.no); saveState('send_doctor'); }
+function callNextDoctor(){ const q=activeQ('waiting_doctor')[0] || activeQ('skipped_doctor')[0]; if(!q) return alert('ยังไม่มีคิวรอพบแพทย์'); callDoctor(q.id); }
+function callDoctor(id){ const q=state.queues.find(x=>x.id===id); if(!q)return; q.status='doctor_calling'; q.updatedAt=nowDateTime(); q.doctorCalledAt=nowDateTime(); log('เรียกพบแพทย์',q.no); saveState('call_doctor'); speak(`ขอเชิญหมายเลข ${q.no} พบแพทย์ที่ห้องตรวจ ค่ะ`); }
+function repeatDoctor(){ const q=lastBy(['doctor_calling']); if(q){ speak(`ขอเชิญหมายเลข ${q.no} พบแพทย์ที่ห้องตรวจ ค่ะ`); log('เรียกซ้ำพบแพทย์',q.no); saveState('repeat_doctor'); } }
+function skipDoctor(){ const q=lastBy(['doctor_calling']); if(q){ q.status='skipped_doctor'; q.updatedAt=nowDateTime(); log('ข้ามพบแพทย์',q.no); saveState('skip_doctor'); } }
+function finishQueue(id){ const q=state.queues.find(x=>x.id===id); if(!q)return; q.status='done'; q.finishedAt=nowDateTime(); q.updatedAt=nowDateTime(); log('เสร็จสิ้น',q.no); saveState('finish'); }
+function timeSlots(){ const arr=[]; for(let h=8;h<=22;h++){ for(const m of [0,30]){ if(h===22 && m>0) continue; arr.push(`${pad(h)}:${pad(m)}`); } } return arr; }
+async function addBooking(evt){
+  if(evt && evt.preventDefault) evt.preventDefault();
+  const btn = evt && evt.currentTarget ? evt.currentTarget : null;
+  const patientName=document.getElementById('bName').value.trim(); const date=document.getElementById('bDate').value; const time=document.getElementById('bTime').value; const gender=document.getElementById('bGender').value; const procedure=document.getElementById('bProcedure').value.trim(); const note=document.getElementById('bNote').value.trim();
+  if(!date||!time||!procedure){ showBookingMessage('กรุณาเลือกวันที่ เวลา และระบุหัตถการ', false); return; }
+  const count=state.bookings.filter(b=>b.date===date && !['cancelled'].includes(b.status)).length;
+  if(count>=10){ showBookingMessage('วันดังกล่าวมีคิวจองทำหัตถการครบ 10 คนแล้ว', false); return; }
+  if(btn){ btn.disabled=true; btn.textContent='กำลังบันทึก...'; }
+  state.bookings.push({id:uid(),patientName,date,time,gender,procedure,note,status:'booked',createdAt:nowDateTime(),updatedAt:nowDateTime()});
+  log('เพิ่มคิวจอง',`${date} ${time} ${procedure}`);
+  refreshBookingListOnly();
+  saveLocal();
+  try{ await apiSend('saveAll',{state,action:'add_booking'}); apiStatus='เชื่อม Google Sheet แล้ว'; showBookingMessage('บันทึกคิวจองสำเร็จ โดยหน้าไม่รีเฟรช'); }
+  catch(e){ apiStatus='โหมดสำรองในเครื่อง: Google Sheet ยังไม่ตอบกลับ'; showBookingMessage('บันทึกในเครื่องแล้ว แต่ Google Sheet ยังไม่ตอบกลับ', false); }
+  if(btn){ btn.disabled=false; btn.textContent='บันทึกคิวจอง'; }
+}
+function bookingArrive(id){ const b=state.bookings.find(x=>x.id===id); if(!b)return; b.status='arrived'; b.updatedAt=nowDateTime(); const q=createQueue('B',{source:'booking',bookingTime:b.time,procedure:b.procedure,gender:b.gender,patientName:b.patientName,note:b.note}); b.queueNo=q.no; b.queueId=q.id; log('คิวจองมาแล้ว',`${b.patientName||'-'} ได้ ${q.no}`); saveState('booking_arrived'); }
+function bookingNoShow(id){ const b=state.bookings.find(x=>x.id===id); if(!b)return; b.status='no_show'; b.updatedAt=nowDateTime(); log('คิวจองไม่มา',`${b.patientName||'-'} ${b.date} ${b.time}`); saveState('booking_noshow'); }
+function bookingCancel(id){ const b=state.bookings.find(x=>x.id===id); if(!b)return; b.status='cancelled'; b.updatedAt=nowDateTime(); log('ยกเลิกคิวจอง',`${b.patientName||'-'} ${b.date} ${b.time}`); saveState('booking_cancel'); }
+function addUser(){ const name=document.getElementById('uName').value.trim(); const role=document.getElementById('uRole').value; const pin=document.getElementById('uPin').value.trim(); if(!name||!role) return alert('กรุณากรอกชื่อและสถานะ'); state.users.push({id:uid(),name,role,pin}); log('เพิ่มผู้ใช้งาน',`${name} (${ROLES[role]})`); saveState('add_user'); }
+function removeUser(id){ state.users=state.users.filter(u=>u.id!==id); log('ลบผู้ใช้งาน',id); saveState('remove_user'); }
+function resetToday(){ if(confirm('รีเซ็ตคิววันนี้ทันที? ระบบปกติจะรีเซ็ตอัตโนมัติหลังเที่ยงคืนอยู่แล้ว')){ state.date=today(); state.counters={A:0,B:0}; state.queues=[]; log('รีเซ็ตคิววันนี้','manual'); saveState('manual_reset'); } }
+function render(){ normalizeDate(); const root=document.getElementById('root'); if(currentPage==='monitor' || currentRole==='monitor'){ root.innerHTML=renderMonitor(); return; }
+  const pages=allowedPages(); if(!pages.includes(currentPage)) currentPage=pages[0];
+  root.innerHTML = `<div class="app"><aside class="side"><div class="brand"><div class="logo">W</div><div><h1>${CLINIC_NAME}</h1><p>ระบบเรียกคิวออนไลน์</p></div></div><div class="roleBox"><label>เลือกสถานะเข้าใช้งาน</label><select onchange="setRole(this.value)">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${currentRole===k?'selected':''}>${v}</option>`).join('')}</select><div class="loginNote">คนไข้เห็นเฉพาะหน้ากดคิว ส่วน Admin และแพทย์เห็นข้อมูลทั้งหมดตามสิทธิ์</div></div><div class="apiBox pill"><span class="dot"></span><span>${apiStatus}</span></div><nav class="nav">${navButtons(pages)}</nav></aside><main class="main"><div class="topbar"><div><h2>${pageTitle()}</h2><div class="dateLine">${thaiDate(today())} · เวลา <span id="clock">${nowTime()}</span></div></div><div class="btnRow"><button class="btn secondary" onclick="apiLoad()">Sync Google Sheet</button>${currentRole==='admin'?'<button class="btn red" onclick="resetToday()">รีเซ็ตวันนี้</button>':''}</div></div>${renderPage()}</main></div>`;
+}
+function navButtons(pages){ const labels={patient:'กดรับคิว',register:'โต๊ะลงทะเบียน',doctor:'ห้องตรวจแพทย์',monitor:'จอ Monitor',dashboard:'Dashboard',booking:'จองหัตถการ B',history:'ประวัติ',admin:'Admin ผู้ใช้งาน'}; return pages.map(p=>`<button class="${currentPage===p?'active':''}" onclick="go('${p}')">${labels[p]}</button>`).join(''); }
+function pageTitle(){ return {patient:'กดรับคิว',register:'โต๊ะลงทะเบียน',doctor:'ห้องตรวจแพทย์',monitor:'จอ Monitor',dashboard:'Dashboard คิว',booking:'จองทำหัตถการ',history:'ประวัติย้อนหลัง',admin:'จัดการผู้ใช้งาน'}[currentPage]||''; }
+function renderPage(){ return ({patient:renderPatient,register:renderRegister,doctor:renderDoctor,dashboard:renderDashboard,booking:renderBooking,history:renderHistory,admin:renderAdmin}[currentPage]||renderPatient)(); }
+function renderPatient(){ return `<div class="grid cols2"><section class="card"><h3>รับคิว Walk in ตรวจ</h3><p class="muted">ระบบจะออกหมายเลขขึ้นต้นด้วย A และส่งไปโต๊ะลงทะเบียนอัตโนมัติ</p><div class="form"><label>เพศ</label><select id="pGender"><option value="">ไม่ระบุ</option><option>ชาย</option><option>หญิง</option><option>อื่น ๆ</option></select><button class="btn" onclick="createQueue('A',{gender:document.getElementById('pGender').value})">กดรับคิว A</button></div></section><section class="card"><h3>คิวจองทำหัตถการ</h3><p class="muted">สำหรับเจ้าหน้าที่ใช้บันทึกในหน้า “จองหัตถการ B” และกด “มาแล้ว” เพื่อออกคิว B</p><div class="bigQueue">A${pad((state.counters.A||0)+1)}</div><div class="hint">หลังออกคิวจะมี Preview 10 วินาที พร้อมปุ่ม Print หรือปิดเองอัตโนมัติ</div></section></div>${renderDashboard(true)}`; }
+function renderRegister(){ const waits=[...activeQ('waiting_registration'),...activeQ('registration_calling'),...activeQ('skipped_registration')]; return `<div class="grid cols3"><div class="card kpi"><div><h3>รอลงทะเบียน</h3><p class="muted">คิวที่ส่งเข้ามาอัตโนมัติ</p></div><div class="num">${activeQ('waiting_registration').length}</div></div><div class="card kpi"><div><h3>กำลังเรียก</h3><p class="muted">ล่าสุด</p></div><div class="num">${lastBy(['registration_calling'])?.no||'-'}</div></div><div class="card"><h3>ควบคุมเสียง</h3><div class="btnRow"><button class="btn" onclick="callNextRegistration()">เรียกคิวถัดไป</button><button class="btn orange" onclick="repeatRegistration()">เรียกซ้ำ</button><button class="btn gray" onclick="skipRegistration()">ข้าม</button></div></div></div><section class="card" style="margin-top:16px"><h3>รายการคิวรอลงทะเบียน</h3><div class="queueList">${waits.length?waits.map(q=>queueItem(q,'register')).join(''):'<p class="muted">ยังไม่มีคิวรอเรียก</p>'}</div></section>`; }
+function renderDoctor(){ const waits=[...activeQ('waiting_doctor'),...activeQ('doctor_calling'),...activeQ('skipped_doctor')]; return `<div class="grid cols3"><div class="card kpi"><div><h3>รอพบแพทย์</h3><p class="muted">ส่งมาจากลงทะเบียน</p></div><div class="num">${activeQ('waiting_doctor').length}</div></div><div class="card kpi"><div><h3>กำลังเรียก</h3><p class="muted">ล่าสุด</p></div><div class="num">${lastBy(['doctor_calling'])?.no||'-'}</div></div><div class="card"><h3>ควบคุมเสียง</h3><div class="btnRow"><button class="btn purple" onclick="callNextDoctor()">เรียกคิวถัดไป</button><button class="btn orange" onclick="repeatDoctor()">เรียกซ้ำ</button><button class="btn gray" onclick="skipDoctor()">ข้าม</button></div></div></div><section class="card" style="margin-top:16px"><h3>รายการคิวรอพบแพทย์</h3><div class="queueList">${waits.length?waits.map(q=>queueItem(q,'doctor')).join(''):'<p class="muted">ยังไม่มีคิวรอพบแพทย์</p>'}</div></section>`; }
+function queueItem(q,mode){ return `<div class="queueItem"><div><div class="qNo">${q.no}</div><div class="muted">${q.prefix==='A'?'Walk in':'หัตถการ'} ${q.procedure?`· ${escapeHtml(q.procedure)}`:''} · ${q.time}</div></div><div><span class="status ${STATUS_CLASS[q.status]||''}">${STATUS_TEXT[q.status]||q.status}</span><div class="btnRow" style="margin-top:8px">${mode==='register'?`<button class="btn mini" onclick="callRegistration('${q.id}')">เรียก</button><button class="btn green mini" onclick="sendToDoctor('${q.id}')">ส่งพบแพทย์</button>`:''}${mode==='doctor'?`<button class="btn purple mini" onclick="callDoctor('${q.id}')">เรียก</button><button class="btn green mini" onclick="finishQueue('${q.id}')">เสร็จสิ้น</button>`:''}</div></div></div>`; }
+function renderDashboard(compact=false){ const q=getQueues({date:today()}); const reg=lastBy(['registration_calling','waiting_doctor','doctor_calling','done']); const doc=lastBy(['doctor_calling','done']); return `<section class="card" style="margin-top:${compact?'16':'0'}px"><h3>ภาพรวมวันนี้</h3><div class="grid cols3"><div class="card kpi"><div><b>ออกคิวถึง</b><p class="muted">A/B วันนี้</p></div><div class="num">A${pad(state.counters.A||0)} / B${pad(state.counters.B||0)}</div></div><div class="card kpi"><div><b>เรียกลงทะเบียนถึง</b><p class="muted">ล่าสุด</p></div><div class="num">${reg?.no||'-'}</div></div><div class="card kpi"><div><b>เรียกตรวจถึง</b><p class="muted">ล่าสุด</p></div><div class="num">${doc?.no||'-'}</div></div></div><div style="margin-top:16px;overflow:auto"><table><thead><tr><th>คิว</th><th>ประเภท</th><th>สถานะ</th><th>เวลาออกคิว</th><th>หัตถการ</th></tr></thead><tbody>${q.length?q.sort((a,b)=>a.createdAt.localeCompare(b.createdAt)).map(x=>`<tr><td><b>${x.no}</b></td><td>${x.prefix==='A'?'Walk in':'จองหัตถการ'}</td><td>${STATUS_TEXT[x.status]||x.status}</td><td>${x.time}</td><td>${escapeHtml(x.procedure||'-')}</td></tr>`).join(''):'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูลวันนี้</td></tr>'}</tbody></table></div></section>`; }
+function bookingListHtml(){
+  const bs=state.bookings.filter(b=>b.date>=today()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  return bs.length?bs.map(b=>`<div class="queueItem"><div><div class="qNo">${b.queueNo||b.time}</div><div><b>${thaiDate(b.date)}</b> · ${escapeHtml(b.patientName||'ไม่ระบุชื่อ')}</div><div class="muted">${escapeHtml(b.procedure)} ${b.queueNo?`· คิว ${b.queueNo}`:''}</div></div><div><span class="status ${STATUS_CLASS[b.status]||''}">${STATUS_TEXT[b.status]||b.status}</span><div class="btnRow" style="margin-top:8px"><button class="btn green mini" onclick="bookingArrive('${b.id}')">มาแล้ว/ออกคิว B</button><button class="btn orange mini" onclick="bookingNoShow('${b.id}')">ไม่มา</button><button class="btn red mini" onclick="bookingCancel('${b.id}')">ยกเลิก</button></div></div></div>`).join(''):'<p class="muted">ยังไม่มีคิวจอง</p>';
+}
+function showBookingMessage(msg, ok=true){
+  const el=document.getElementById('bookingMsg');
+  if(!el) return;
+  el.className = ok ? 'hint' : 'hint';
+  el.style.background = ok ? '#ecfdf5' : '#fff7ed';
+  el.style.borderColor = ok ? '#bbf7d0' : '#fed7aa';
+  el.style.color = ok ? '#047857' : '#9a3412';
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(()=>{ if(el) el.classList.add('hidden'); }, 3500);
+}
+function refreshBookingListOnly(){
+  const el=document.getElementById('bookingList');
+  if(el) el.innerHTML = bookingListHtml();
+}
+function renderBooking(){ return `<div class="grid cols2"><section class="card"><h3>เพิ่มคิวจองทำหัตถการ B</h3><div class="form"><label>ชื่อคนไข้</label><input id="bName" placeholder="ระบุชื่อหรือเว้นว่าง"><label>วันที่</label><input id="bDate" type="date" value="${today()}"><label>เวลา 08:00-22:00</label><select id="bTime">${timeSlots().map(t=>`<option>${t}</option>`).join('')}</select><label>เพศ</label><select id="bGender"><option value="">ไม่ระบุ</option><option>ชาย</option><option>หญิง</option><option>อื่น ๆ</option></select><label>หัตถการ</label><input id="bProcedure" placeholder="เช่น CO2 laser, TCA CROSS, ฉีดคีลอยด์"><label>หมายเหตุ</label><textarea id="bNote" placeholder="รายละเอียดเพิ่มเติม"></textarea><button type="button" class="btn" onclick="addBooking(event)">บันทึกคิวจอง</button><div id="bookingMsg" class="hint hidden"></div><div class="hint">จำกัดคิวจองทำหัตถการไม่เกิน 10 คนต่อวัน</div></div></section><section class="card"><h3>รายการจองที่กำลังจะมาถึง</h3><div id="bookingList" class="queueList">${bookingListHtml()}</div></section></div>`; }
+function renderHistory(){ const date=document.getElementById('hDate')?.value || today(); const gender=document.getElementById('hGender')?.value || ''; const proc=document.getElementById('hProc')?.value || ''; const rows=[...state.queues].filter(q=>(!date||q.date===date)&&(!gender||q.gender===gender)&&(!proc||String(q.procedure||'').includes(proc))).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)); return `<section class="card"><h3>กรองประวัติ</h3><div class="grid cols3"><div class="form"><label>วันที่</label><input id="hDate" type="date" value="${date}" onchange="render()"></div><div class="form"><label>เพศ</label><select id="hGender" onchange="render()"><option value="">ทั้งหมด</option><option ${gender==='ชาย'?'selected':''}>ชาย</option><option ${gender==='หญิง'?'selected':''}>หญิง</option><option ${gender==='อื่น ๆ'?'selected':''}>อื่น ๆ</option></select></div><div class="form"><label>หัตถการ</label><input id="hProc" value="${escapeHtml(proc)}" placeholder="ค้นหาหัตถการ" oninput="setTimeout(render,250)"></div></div><div style="margin-top:16px;overflow:auto"><table><thead><tr><th>วันที่</th><th>คิว</th><th>เพศ</th><th>ประเภท</th><th>หัตถการ</th><th>สถานะ</th><th>เวลา</th></tr></thead><tbody>${rows.length?rows.map(q=>`<tr><td>${thaiDate(q.date)}</td><td><b>${q.no}</b></td><td>${q.gender||'-'}</td><td>${q.prefix==='A'?'Walk in':'จองหัตถการ'}</td><td>${escapeHtml(q.procedure||'-')}</td><td>${STATUS_TEXT[q.status]||q.status}</td><td>${q.time}</td></tr>`).join(''):'<tr><td colspan="7" class="muted">ไม่พบข้อมูลตามตัวกรอง</td></tr>'}</tbody></table></div></section>`; }
+function renderAdmin(){ return `<div class="grid cols2"><section class="card"><h3>เพิ่มผู้ใช้งาน</h3><div class="form"><label>ชื่อผู้ใช้</label><input id="uName" placeholder="เช่น เจ้าหน้าที่ 1"><label>สถานะ</label><select id="uRole">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><label>PIN/รหัสภายใน</label><input id="uPin" placeholder="ใส่หรือเว้นว่าง"><button class="btn" onclick="addUser()">เพิ่มผู้ใช้งาน</button></div><div class="hint" style="margin-top:12px">หมายเหตุ: ไฟล์ HTML นี้ควบคุมสิทธิ์ระดับหน้าใช้งาน หากต้องการล็อกอินแบบปลอดภัยจริงควรตรวจ PIN ที่ Google Apps Script ด้วย</div></section><section class="card"><h3>ผู้ใช้งานทั้งหมด</h3><table><thead><tr><th>ชื่อ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${escapeHtml(u.name)}</td><td>${ROLES[u.role]||u.role}</td><td><button class="btn red mini" onclick="removeUser('${u.id}')">ลบ</button></td></tr>`).join('')}</tbody></table></section></div><section class="card" style="margin-top:16px"><h3>บันทึกระบบล่าสุด</h3><table><thead><tr><th>วันที่เวลา</th><th>สถานะ</th><th>รายการ</th><th>รายละเอียด</th></tr></thead><tbody>${state.logs.slice(0,80).map(l=>`<tr><td>${new Date(l.at).toLocaleString('th-TH',{hour12:false})}</td><td>${ROLES[l.role]||l.role}</td><td>${escapeHtml(l.action)}</td><td>${escapeHtml(l.detail)}</td></tr>`).join('')}</tbody></table></section>`; }
+function renderMonitor(){ const reg=lastBy(['registration_calling']); const doc=lastBy(['doctor_calling']); return `<div class="monitor"><div class="title"><div><h1>${CLINIC_NAME}</h1><div class="monitorSub">จอแสดงคิวประจำวันที่ ${thaiDate(today())}</div></div><div class="monitorSub" id="clock">${nowTime()}</div></div><div class="monitorGrid"><div class="monitorCard"><h2>โต๊ะลงทะเบียน</h2><div class="monitorNo">${reg?.no||'-'}</div><div class="monitorSub">ขอเชิญที่โต๊ะลงทะเบียน</div></div><div class="monitorCard"><h2>ห้องตรวจแพทย์</h2><div class="monitorNo">${doc?.no||'-'}</div><div class="monitorSub">ขอเชิญพบแพทย์ที่ห้องตรวจ</div></div></div><div class="monitorGrid"><div class="monitorCard"><h2>รอลงทะเบียน</h2><div class="monitorNo">${activeQ('waiting_registration').length}</div></div><div class="monitorCard"><h2>รอพบแพทย์</h2><div class="monitorNo">${activeQ('waiting_doctor').length}</div></div></div></div>`; }
+setInterval(()=>{ const c=document.getElementById('clock'); if(c)c.textContent=nowTime(); normalizeDate(); },1000);
+setInterval(apiLoad,8000);
+normalizeDate(); render(); apiLoad();
+</script>
+</body>
+</html>
