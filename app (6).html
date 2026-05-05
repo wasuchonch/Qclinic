@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>ระบบคิวคลินิก</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blue:#1565C0;--blue-lt:#e3f2fd;--blue-dk:#0d47a1;
+  --teal:#00695c;--teal-lt:#e0f2f1;
+  --green:#2e7d32;--green-lt:#e8f5e9;
+  --purple:#4527a0;--purple-lt:#ede7f6;
+  --red:#c62828;--red-lt:#ffebee;
+  --pink:#c2185b;--pink-lt:#fce4ec;
+  --orange:#e65100;
+  --gold:#fbbf24;
+  --bg:#f0f4f8;--card:#fff;
+  --border:#e0e0e0;--txt:#212121;--muted:#757575;
+}
+html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--txt);overflow:hidden;}
+
+/* ══ LOGIN ══ */
+/* ══ ROLE SELECTOR ══ */
+#role-screen{
+  position:fixed;inset:0;background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);
+  display:flex;align-items:center;justify-content:center;z-index:1000;
+}
+#role-screen.hide{display:none;}
+.role-box{width:100%;max-width:440px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.role-clinic{font-size:1.8rem;font-weight:900;color:#fff;text-align:center;}
+.role-sub{font-size:.9rem;color:rgba(255,255,255,.55);margin-top:-12px;}
+.role-btn{
+  width:100%;padding:28px 24px;border:none;border-radius:20px;cursor:pointer;
+  display:flex;align-items:center;gap:20px;
+  box-shadow:0 6px 24px rgba(0,0,0,.2);transition:.15s;
+}
+.role-btn:active{transform:scale(.97);}
+.role-btn-icon{font-size:2.8rem;flex-shrink:0;}
+.role-btn-text{text-align:left;}
+.role-btn-title{font-size:1.4rem;font-weight:800;color:#fff;display:block;}
+.role-btn-sub{font-size:.88rem;color:rgba(255,255,255,.75);margin-top:2px;display:block;}
+.rbtn-staff{background:linear-gradient(135deg,#1976D2,#0d47a1);}
+.rbtn-patient{background:linear-gradient(135deg,#2e7d32,#1b5e20);}
+
+
+/* ══ SHELL ══ */
+#shell{display:flex;height:100vh;width:100vw;overflow:hidden;}
+
+/* SIDEBAR */
+#sb{width:210px;min-width:210px;background:#1a237e;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 12px rgba(0,0,0,.3);}
+.sb-head{padding:16px 14px 12px;border-bottom:1px solid rgba(255,255,255,.1);}
+.sb-clinic{font-size:.92rem;font-weight:800;color:#fff;word-break:break-all;line-height:1.3;}
+.sb-user{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:3px;}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0;}
+.sb-sec{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase;padding:12px 14px 3px;}
+.sb-btn{display:flex;align-items:center;gap:9px;width:100%;padding:10px 14px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.65);font-family:'Sarabun',sans-serif;font-size:.87rem;font-weight:600;text-align:left;transition:.15s;position:relative;}
+.sb-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-btn.on{background:rgba(255,255,255,.14);color:#fff;}
+.sb-btn.on::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--gold);border-radius:0 3px 3px 0;}
+.sb-foot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:8px;}
+.conn-row{display:flex;align-items:center;gap:6px;}
+.cdot{width:8px;height:8px;border-radius:50%;background:#f44336;flex-shrink:0;}
+.cdot.ok{background:#4caf50;}
+.ctxt{font-size:.72rem;color:rgba(255,255,255,.4);}
+.logout-btn{width:100%;padding:7px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:none;color:rgba(255,255,255,.55);font-family:'Sarabun',sans-serif;font-size:.8rem;cursor:pointer;transition:.15s;}
+.logout-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+/* MAIN */
+#main{flex:1;overflow:hidden;position:relative;background:var(--bg);}
+.pg{position:absolute;inset:0;overflow-y:auto;display:none;padding:20px 22px;flex-direction:column;gap:14px;background:var(--bg);}
+.pg.on{display:flex;}
+
+/* ══ KIOSK (patient view) ══ */
+#kiosk-view{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:500;}
+#kiosk-view.on{display:flex;}
+.kv-inner{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px;}
+.kv-name{font-size:2rem;font-weight:900;color:var(--blue);text-align:center;}
+.kv-date{font-size:.95rem;color:var(--muted);}
+.kv-btns{display:flex;flex-direction:column;gap:14px;width:100%;}
+.kbtn{width:100%;padding:28px 20px;border:none;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 6px 24px rgba(0,0,0,.15);transition:.15s;}
+.kbtn:active{transform:scale(.97);}
+.ki{font-size:2.8rem;}
+.kt{font-size:1.5rem;font-weight:800;color:#fff;}
+.ks{font-size:.88rem;color:rgba(255,255,255,.8);}
+.kbtn-a{background:linear-gradient(135deg,#1976D2,var(--blue-dk));}
+.kbtn-b{background:linear-gradient(135deg,#388e3c,var(--green));}
+.kv-logout{margin-top:8px;padding:8px 20px;border:2px solid var(--border);border-radius:20px;background:#fff;color:var(--muted);font-family:'Sarabun',sans-serif;font-size:.85rem;cursor:pointer;}
+
+/* Queue number flash overlay */
+#qnum-flash{
+  position:fixed;inset:0;background:rgba(255,255,255,.97);
+  display:none;flex-direction:column;align-items:center;justify-content:center;z-index:800;
+}
+#qnum-flash.on{display:flex;}
+.flash-clinic{font-size:.9rem;color:var(--muted);font-weight:600;}
+.flash-type{display:inline-block;padding:4px 16px;border-radius:20px;font-size:.85rem;font-weight:700;margin:8px 0;}
+.flash-num{font-size:8rem;font-weight:900;line-height:1;letter-spacing:6px;}
+.flash-num-a{color:var(--blue);}
+.flash-num-b{color:var(--green);}
+.flash-sub{font-size:1rem;color:var(--muted);margin-top:8px;}
+.flash-bar-wrap{width:200px;height:5px;background:#e0e0e0;border-radius:4px;margin-top:20px;overflow:hidden;}
+.flash-bar{height:100%;border-radius:4px;transition:width 1s linear;}
+
+/* B Select overlay */
+#bselect{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;gap:12px;z-index:600;padding:18px;}
+#bselect.on{display:flex;}
+.bs-top{display:flex;align-items:center;gap:12px;}
+.bs-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+.bcard{background:#fff;border-radius:14px;padding:15px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;border:2px solid transparent;transition:.12s;}
+.bcard:active{border-color:var(--green);}
+.bcard.dis{opacity:.45;pointer-events:none;}
+.btime{background:var(--green-lt);color:var(--green);border-radius:10px;padding:10px 14px;font-size:1.05rem;font-weight:800;min-width:68px;text-align:center;}
+.bname{font-size:1rem;font-weight:700;}
+.bproc{font-size:.83rem;color:var(--muted);margin-top:2px;}
+.bst{margin-left:auto;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+
+/* ══ COMMON COMPONENTS ══ */
+.pg-title{font-size:1.25rem;font-weight:800;}
+.card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.card-title{font-size:.92rem;font-weight:800;margin-bottom:14px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg{margin-bottom:12px;}
+.fl{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.fi{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Sarabun',sans-serif;font-size:.93rem;color:var(--txt);background:#fff;transition:.15s;}
+.fi:focus{outline:none;border-color:var(--blue);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border:none;border-radius:12px;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.92rem;font-weight:700;transition:.15s;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;}
+.btn-blue  {background:var(--blue);color:#fff;box-shadow:0 3px 10px rgba(21,101,192,.3);}
+.btn-teal  {background:var(--teal);color:#fff;box-shadow:0 3px 10px rgba(0,105,92,.25);}
+.btn-green {background:var(--green);color:#fff;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-red   {background:var(--red);color:#fff;}
+.btn-lt    {background:var(--blue-lt);color:var(--blue);}
+.btn-lt-t  {background:var(--teal-lt);color:var(--teal);}
+.btn-out   {background:#fff;color:var(--muted);border:2px solid var(--border);}
+.btn-sm    {padding:7px 13px;font-size:.82rem;border-radius:8px;}
+.btn-w     {width:100%;}
+.sc{background:var(--card);border-radius:13px;padding:14px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.sc-n{font-size:2rem;font-weight:900;line-height:1;}
+.sc-l{font-size:.73rem;color:var(--muted);font-weight:600;margin-top:2px;}
+
+/* Queue items */
+.qi{background:var(--card);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:2px solid transparent;transition:.12s;}
+.qi:hover{border-color:var(--border);}
+.qn{font-size:1.1rem;font-weight:800;min-width:56px;}
+.qn-a{color:var(--blue);}
+.qn-b{color:var(--green);}
+.qi-info .nm{font-size:.88rem;font-weight:600;}
+.qi-info .dt{font-size:.76rem;color:var(--muted);margin-top:1px;}
+.qi-tm{margin-left:auto;font-size:.76rem;color:var(--muted);white-space:nowrap;}
+.cbtn{border:none;border-radius:8px;padding:6px 12px;font-family:'Sarabun',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.cbtn-b{background:var(--blue-lt);color:var(--blue);}
+.cbtn-b:hover{background:var(--blue);color:#fff;}
+.cbtn-t{background:var(--teal-lt);color:var(--teal);}
+.cbtn-t:hover{background:var(--teal);color:#fff;}
+.empty{text-align:center;color:var(--muted);padding:28px;font-size:.9rem;}
+.gc{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.gc-m{background:var(--blue-lt);color:var(--blue);}
+.gc-f{background:var(--pink-lt);color:var(--pink);}
+.gc-o{background:var(--purple-lt);color:var(--purple);}
+
+/* Staff pages */
+.staff-layout{display:grid;grid-template-columns:1fr 310px;gap:14px;flex:1;min-height:0;}
+.staff-main{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden;}
+.staff-sb{display:flex;flex-direction:column;gap:10px;min-height:0;overflow-y:auto;}
+.cbox{border-radius:14px;padding:18px 22px;}
+.cbox-blue{background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;}
+.cbox-teal{background:linear-gradient(135deg,var(--teal),#004d40);color:#fff;}
+.clabel{font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-bottom:5px;}
+.cnum{font-size:4.5rem;font-weight:900;line-height:1;letter-spacing:4px;}
+.cnum-e{opacity:.25;font-size:3rem;}
+.cdet{opacity:.8;font-size:.88rem;margin-top:3px;}
+.act-row{display:flex;gap:8px;flex-wrap:wrap;}
+.act-row .btn{flex:1;min-width:105px;}
+.sec-lbl{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+.qlist{display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1;}
+.ri{background:var(--green-lt);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:.86rem;}
+.ri .rn{font-weight:800;color:var(--green);min-width:50px;}
+.di{background:#f5f5f5;border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:.86rem;}
+.di .dn{font-weight:800;color:var(--muted);min-width:50px;}
+.tsm{margin-left:auto;font-size:.75rem;color:var(--muted);}
+
+/* Display page */
+#pg-display{background:#070c1e;padding:0;gap:0;}
+.dp-head{background:#0d1530;border-bottom:1px solid #1e2d5a;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.dp-clinic{font-size:1.3rem;font-weight:800;color:#fff;}
+.dp-clock{font-size:1.7rem;font-weight:700;color:#38bdf8;font-variant-numeric:tabular-nums;}
+.dp-date-s{font-size:.72rem;color:#64748b;text-align:right;}
+.dp-panels{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #1e2d5a;flex-shrink:0;}
+.dp-panel{padding:22px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.dp-panel:first-child{border-right:1px solid #1e2d5a;}
+.dp-label{font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.dp-blink{width:8px;height:8px;border-radius:50%;animation:bl 1.2s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+.dp-num{font-size:clamp(4rem,9vw,7rem);font-weight:900;letter-spacing:4px;line-height:1;transition:.3s;}
+.dp-num.empty{opacity:.18;}
+.dp-sub{font-size:.9rem;font-weight:600;margin-top:6px;}
+.dp-board{flex:1;padding:10px 18px;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.dp-bhdr{display:grid;grid-template-columns:80px 70px 1fr 90px 1fr;gap:8px;padding:5px 8px;font-size:.7rem;font-weight:700;color:#64748b;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid #1e2d5a;margin-bottom:3px;flex-shrink:0;}
+.dp-brows{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.dp-brow{display:grid;grid-template-columns:80px 70px 1fr 90px 1fr;gap:8px;padding:7px 8px;border-radius:6px;font-size:.86rem;align-items:center;}
+.dp-brow:hover{background:rgba(255,255,255,.03);}
+.pulse{animation:pu .6s ease;}
+@keyframes pu{0%{transform:scale(1.12)}50%{transform:scale(.97)}100%{transform:scale(1)}}
+#dp-start{position:absolute;inset:0;background:#070c1e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:5;}
+.dp-start-btn{background:#38bdf8;color:#000;border:none;border-radius:14px;padding:15px 46px;font-size:1.15rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;}
+
+/* Appt page */
+.appt-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;flex:1;min-height:0;}
+.appt-form{overflow-y:auto;}
+.appt-list-area{overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.dnbtn{background:var(--purple-lt);color:var(--purple);border:none;border-radius:8px;padding:7px 12px;font-size:.95rem;cursor:pointer;font-weight:700;}
+.dnbtn:hover{background:var(--purple);color:#fff;}
+.ddisp{font-size:1rem;font-weight:700;min-width:140px;text-align:center;}
+.acard{border:2px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;position:relative;background:#fff;}
+.acard.status-arrived{background:var(--blue-lt);border-color:#90caf9;}
+.acard.status-absent{background:#fafafa;opacity:.6;}
+.atb{background:var(--purple-lt);color:var(--purple);border-radius:9px;padding:9px 12px;font-size:1rem;font-weight:800;min-width:64px;text-align:center;}
+.acard.status-arrived .atb{background:var(--blue-lt);color:var(--blue);}
+.aacts{margin-left:auto;display:flex;gap:5px;flex-shrink:0;}
+.ast{position:absolute;right:9px;top:9px;font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:20px;}
+.ast-s{background:var(--purple-lt);color:var(--purple);}
+.ast-a{background:var(--blue-lt);color:var(--blue);}
+.ast-x{background:var(--red-lt);color:var(--red);}
+.pill{padding:5px 11px;border:none;border-radius:20px;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.78rem;font-weight:700;transition:.12s;}
+.pill-r{background:var(--red-lt);color:var(--red);}
+.pill-r:hover{background:var(--red);color:#fff;}
+.pill-g{background:var(--green-lt);color:var(--green);}
+.pill-g:hover{background:var(--green);color:#fff;}
+.pill-gray{background:#f5f5f5;color:#9e9e9e;}
+.pill-gray:hover{background:#f44336;color:#fff;}
+.t24r{display:flex;align-items:center;gap:6px;}
+.t24r select{padding:9px 7px;border:2px solid var(--border);border-radius:9px;font-family:'Sarabun',sans-serif;font-size:.92rem;color:var(--txt);background:#fff;}
+.t24r select:focus{outline:none;border-color:var(--purple);}
+.tc{font-size:1.25rem;font-weight:800;color:var(--muted);}
+.tq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px;}
+.tq{padding:6px 3px;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.76rem;font-weight:600;color:var(--muted);transition:.12s;text-align:center;}
+.tq:hover{border-color:var(--purple);color:var(--purple);}
+.tq.sel{background:var(--purple);border-color:var(--purple);color:#fff;}
+.tq.taken{opacity:.4;cursor:not-allowed;}
+.gbrow{display:flex;gap:7px;}
+.gb{flex:1;padding:9px;border:2px solid var(--border);border-radius:9px;background:#fff;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.88rem;font-weight:700;color:var(--muted);transition:.12s;text-align:center;}
+.gb:hover{border-color:var(--purple);color:var(--purple);}
+.gb.sel-m{background:var(--blue-lt);border-color:var(--blue);color:var(--blue);}
+.gb.sel-f{background:var(--pink-lt);border-color:var(--pink);color:var(--pink);}
+.gb.sel-o{background:var(--purple-lt);border-color:var(--purple);color:var(--purple);}
+
+/* History */
+.hs-bar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.hs-bar .fg{margin-bottom:0;flex:1;min-width:130px;}
+.hf-bar{display:none;gap:10px;align-items:center;flex-wrap:wrap;background:var(--card);border-radius:13px;padding:11px 15px;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.hf-bar label{font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap;}
+.hf-bar select,.hf-bar input[type=text]{padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:.86rem;color:var(--txt);background:#fff;}
+.fcount{margin-left:auto;font-size:.82rem;color:var(--muted);font-weight:600;}
+.hsum{display:none;gap:14px;flex-wrap:wrap;align-items:center;background:var(--purple-lt);border-radius:13px;padding:13px 17px;}
+.htbl-wrap{overflow:auto;max-height:calc(100vh - 360px);}
+.htbl{width:100%;border-collapse:collapse;font-size:.84rem;}
+.htbl th{background:#f5f5f5;padding:9px 11px;text-align:left;font-size:.74rem;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;}
+.htbl td{padding:8px 11px;border-bottom:1px solid #f7f7f7;}
+.htbl tr:hover td{background:#fafafa;}
+mark{background:#fff176;border-radius:3px;padding:0 2px;}
+
+/* Users page */
+.user-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.user-table th{background:#f5f5f5;padding:10px 12px;text-align:left;font-size:.78rem;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);}
+.user-table td{padding:10px 12px;border-bottom:1px solid #f5f5f5;}
+.role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;}
+.role-admin {background:var(--red-lt);color:var(--red);}
+.role-doctor{background:var(--teal-lt);color:var(--teal);}
+.role-staff {background:var(--blue-lt);color:var(--blue);}
+
+/* Settings */
+#pg-cfg .ok-msg{display:none;background:var(--green-lt);color:var(--green);padding:9px 13px;border-radius:9px;font-weight:700;font-size:.88rem;margin-top:8px;}
+
+/* Print zone */
+@media print{
+  @page{size:58mm auto;margin:3mm;}
+  body>*{display:none!important;}
+  #pz{display:block!important;}
+}
+#pz{display:none;font-family:'Sarabun',sans-serif;width:52mm;margin:0 auto;text-align:center;}
+#pz .sep{border-top:1px dashed #000;margin:4px 0;}
+#pz .p0{font-size:10pt;font-weight:700;}
+#pz .p1{font-size:8pt;color:#333;}
+#pz .p2{font-size:9pt;margin:3px 0;}
+#pz .p3{font-size:48pt;font-weight:900;line-height:1.1;letter-spacing:2px;}
+#pz .p4{font-size:8pt;margin:2px 0;}
+#pz .p5{font-size:7.5pt;margin-top:4px;}
+
+/* Toast/Modal/Spinner */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:600;z-index:9000;display:none;max-width:90%;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+#toast.on{display:block;animation:tin .3s ease;}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+#mlov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:8000;}
+#mlov.on{display:flex;}
+.mlbox{background:#fff;border-radius:18px;padding:26px 28px;max-width:340px;width:90%;text-align:center;}
+.mlbox h3{font-size:1.1rem;font-weight:800;margin-bottom:7px;}
+.mlbox p{color:var(--muted);margin-bottom:18px;font-size:.88rem;}
+.mlr{display:flex;gap:9px;}
+.mlr .btn{flex:1;}
+#spin{position:fixed;inset:0;background:rgba(255,255,255,.8);display:none;justify-content:center;align-items:center;z-index:7000;}
+#spin.on{display:flex;}
+.sp{width:42px;height:42px;border:5px solid #e3f2fd;border-top-color:var(--blue);border-radius:50%;animation:rr .8s linear infinite;}
+@keyframes rr{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- PRINT ZONE -->
+<div id="pz">
+  <div class="p0" id="pz-c"></div>
+  <div class="p1" id="pz-d"></div>
+  <div class="sep"></div>
+  <div class="p2" id="pz-t"></div>
+  <div class="p3" id="pz-n"></div>
+  <div class="sep"></div>
+  <div class="p4" id="pz-nm"></div>
+  <div class="p4" id="pz-pr"></div>
+  <div class="p4" id="pz-at"></div>
+  <div class="p4" id="pz-tm"></div>
+  <div class="sep"></div>
+  <div class="p5">กรุณาติดตามหน้าจอแสดงผล</div>
+</div>
+
+<!-- ══ ROLE SELECTOR ══ -->
+<div id="role-screen">
+  <div class="role-box">
+    <div class="role-clinic" id="role-clinic-name">คลินิก</div>
+    <div class="role-sub">ระบบบริหารจัดการคิว — เลือกประเภทการใช้งาน</div>
+
+    <button class="role-btn rbtn-staff" onclick="enterAsStaff()">
+      <div class="role-btn-icon">🏥</div>
+      <div class="role-btn-text">
+        <span class="role-btn-title">เจ้าหน้าที่ / แพทย์</span>
+        <span class="role-btn-sub">เข้าสู่ระบบจัดการคิว ลงทะเบียน ห้องตรวจ</span>
+      </div>
+    </button>
+
+    <button class="role-btn rbtn-patient" onclick="enterAsPatient()">
+      <div class="role-btn-icon">🪑</div>
+      <div class="role-btn-text">
+        <span class="role-btn-title">ผู้รับบริการ</span>
+        <span class="role-btn-sub">กดรับหมายเลขคิว Walk-in หรือ นัดหัตถการ</span>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- ══ KIOSK VIEW (patient) ══ -->
+<div id="kiosk-view">
+  <div class="kv-inner">
+    <div>
+      <div class="kv-name" id="kv-name">คลินิก</div>
+      <div class="kv-date" id="kv-date" style="text-align:center;"></div>
+    </div>
+    <div class="kv-btns">
+      <button class="kbtn kbtn-a" onclick="takeA()">
+        <div class="ki">🪑</div>
+        <div class="kt">Walk-in</div>
+        <div class="ks">มาตรวจทั่วไป • คิว A</div>
+      </button>
+      <button class="kbtn kbtn-b" onclick="openBSelect()">
+        <div class="ki">📋</div>
+        <div class="kt">นัดหัตถการ</div>
+        <div class="ks">มีนัดทำหัตถการ • คิว B</div>
+      </button>
+    </div>
+    <button class="kv-logout" onclick="logout()">ออกจากระบบ</button>
+  </div>
+</div>
+
+<!-- Queue Number Flash -->
+<div id="qnum-flash">
+  <div class="flash-clinic" id="fl-clinic"></div>
+  <span class="flash-type" id="fl-type"></span>
+  <div class="flash-num" id="fl-num"></div>
+  <div class="flash-sub" id="fl-sub"></div>
+  <div class="flash-bar-wrap"><div class="flash-bar" id="fl-bar"></div></div>
+</div>
+
+<!-- B Select -->
+<div id="bselect">
+  <div class="bs-top">
+    <button class="btn btn-lt btn-sm" onclick="closeBSelect()">← กลับ</button>
+    <div style="font-size:1rem;font-weight:700;">เลือกชื่อจากรายการนัด</div>
+  </div>
+  <div class="bs-list" id="bs-list"><div class="empty">กำลังโหลด...</div></div>
+</div>
+
+<!-- ══ STAFF SHELL ══ -->
+<div id="shell">
+<div id="sb">
+  <div class="sb-head">
+    <div class="sb-clinic" id="sb-name">คลินิก</div>
+    <div class="sb-user" id="sb-user"></div>
+  </div>
+  <nav class="sb-nav" id="sb-nav">
+    <!-- filled by role -->
+  </nav>
+  <div class="sb-foot">
+    <div class="conn-row"><div class="cdot" id="cdot"></div><span class="ctxt" id="ctxt">กำลังเชื่อมต่อ...</span></div>
+    <button class="logout-btn" onclick="logout()">🚪 ออกจากระบบ</button>
+  </div>
+</div>
+<div id="main">
+
+<!-- PAGE: DISPLAY -->
+<div class="pg" id="pg-display" style="background:#070c1e;padding:0;gap:0;">
+  <div id="dp-start"><div style="font-size:1.7rem;font-weight:800;color:#fff;">ระบบแสดงคิว</div><div style="color:#64748b;">กดปุ่มเพื่อเริ่มระบบและเสียงประกาศ</div><button class="dp-start-btn" onclick="startDisp()">▶ เริ่มระบบ</button></div>
+  <div class="dp-head"><div class="dp-clinic" id="dp-name">คลินิก</div><div><div class="dp-clock" id="dp-clock">--:--:--</div><div class="dp-date-s" id="dp-date"></div></div></div>
+  <div class="dp-panels">
+    <div class="dp-panel"><div class="dp-label" style="color:#38bdf8;"><span class="dp-blink" style="background:#38bdf8;"></span>โต๊ะลงทะเบียน</div><div class="dp-num empty" id="dp-rn" style="color:#38bdf8;">—</div><div class="dp-sub" style="color:#38bdf8;" id="dp-rs"></div></div>
+    <div class="dp-panel"><div class="dp-label" style="color:var(--gold);"><span class="dp-blink" style="background:var(--gold);"></span>ห้องตรวจ</div><div class="dp-num empty" id="dp-dn" style="color:var(--gold);">—</div><div class="dp-sub" style="color:var(--gold);" id="dp-ds"></div></div>
+  </div>
+  <div class="dp-board">
+    <div class="dp-bhdr"><span>หมายเลข</span><span>ประเภท</span><span>สถานะ</span><span>รับคิว</span><span>ชื่อ/หัตถการ</span></div>
+    <div class="dp-brows" id="dp-rows"></div>
+  </div>
+</div>
+
+<!-- PAGE: REGISTRATION -->
+<div class="pg" id="pg-reg">
+  <div class="pg-title">📋 โต๊ะลงทะเบียน</div>
+  <div class="staff-layout" style="flex:1;min-height:0;">
+    <div class="staff-main">
+      <div class="cbox cbox-blue">
+        <div class="clabel">📢 กำลังเรียก</div>
+        <div class="cnum cnum-e" id="reg-num">—</div>
+        <div class="cdet" id="reg-det"></div>
+      </div>
+      <div class="act-row">
+        <button class="btn btn-blue" id="r-next" onclick="rNext()">📣 เรียกคิวถัดไป</button>
+        <button class="btn btn-lt"   id="r-recall" onclick="rRecall()" disabled>🔁 เรียกซ้ำ</button>
+        <button class="btn btn-green" id="r-done"  onclick="rDone()" disabled>✅ ลงทะเบียนเสร็จ</button>
+        <button class="btn btn-out"  id="r-skip"   onclick="rSkip()" disabled>⏭ ข้ามคิว</button>
+      </div>
+      <div class="sec-lbl">รายการรอลงทะเบียน</div>
+      <div class="qlist" id="r-wait" style="max-height:calc(100vh - 400px);"><div class="empty">ไม่มีคิว</div></div>
+    </div>
+    <div class="staff-sb">
+      <div class="g2">
+        <div class="sc"><div class="sc-n" id="r-sw" style="color:var(--blue)">0</div><div class="sc-l">รอลงทะเบียน</div></div>
+        <div class="sc"><div class="sc-n" id="r-sr" style="color:var(--green)">0</div><div class="sc-l">รอห้องตรวจ</div></div>
+        <div class="sc"><div class="sc-n" id="r-sd" style="color:var(--orange)">0</div><div class="sc-l">เสร็จสิ้น</div></div>
+        <div class="sc"><div class="sc-n" id="r-st" style="color:var(--muted)">0</div><div class="sc-l">ทั้งหมด</div></div>
+      </div>
+      <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;">
+        <div class="card-title">✅ รอห้องตรวจ</div>
+        <div class="qlist" id="r-done"><div class="empty" style="padding:12px;font-size:.83rem;">ยังไม่มี</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: DOCTOR -->
+<div class="pg" id="pg-doc">
+  <div class="pg-title">🩺 ห้องตรวจ / ห้องหัตถการ</div>
+  <div class="staff-layout" style="flex:1;min-height:0;">
+    <div class="staff-main">
+      <div class="cbox cbox-teal">
+        <div class="clabel">📢 กำลังเรียกเข้าห้องตรวจ</div>
+        <div class="cnum cnum-e" id="doc-num">—</div>
+        <div class="cdet" id="doc-det"></div>
+      </div>
+      <div class="act-row">
+        <button class="btn btn-teal" id="d-next"   onclick="dNext()">📣 เรียกเข้าห้องตรวจ</button>
+        <button class="btn btn-lt-t" id="d-recall" onclick="dRecall()" disabled>🔁 เรียกซ้ำ</button>
+        <button class="btn btn-blue" id="d-done"   onclick="dDone()" disabled>✅ ตรวจเสร็จ</button>
+        <button class="btn btn-out"  id="d-skip"   onclick="dSkip()" disabled>⏭ ข้ามคิว</button>
+      </div>
+      <div class="sec-lbl">รายการรอตรวจ (ลงทะเบียนแล้ว)</div>
+      <div class="qlist" id="d-wait" style="max-height:calc(100vh - 400px);"><div class="empty">ไม่มีคิว</div></div>
+    </div>
+    <div class="staff-sb">
+      <div class="g2">
+        <div class="sc"><div class="sc-n" id="d-sr" style="color:var(--teal)">0</div><div class="sc-l">รอตรวจ</div></div>
+        <div class="sc"><div class="sc-n" id="d-sw" style="color:var(--blue)">0</div><div class="sc-l">รอลงทะเบียน</div></div>
+        <div class="sc"><div class="sc-n" id="d-sd" style="color:var(--orange)">0</div><div class="sc-l">เสร็จสิ้น</div></div>
+        <div class="sc"><div class="sc-n" id="d-st" style="color:var(--muted)">0</div><div class="sc-l">ทั้งหมด</div></div>
+      </div>
+      <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;">
+        <div class="card-title">🏁 ตรวจเสร็จแล้ว</div>
+        <div class="qlist" id="d-done"><div class="empty" style="padding:12px;font-size:.83rem;">ยังไม่มี</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: APPOINTMENTS -->
+<div class="pg" id="pg-appt">
+  <div class="pg-title">📅 นัดหัตถการ</div>
+  <div class="appt-layout" style="flex:1;min-height:0;">
+    <div class="card appt-form">
+      <div class="card-title">➕ เพิ่มรายการนัด</div>
+      <div class="fg"><label class="fl">วันที่นัด</label><input type="date" class="fi" id="ap-date"/></div>
+      <div class="fg"><label class="fl">เพศ</label><div class="gbrow"><button class="gb" id="gb-m" onclick="selG('ชาย')">♂ ชาย</button><button class="gb" id="gb-f" onclick="selG('หญิง')">♀ หญิง</button><button class="gb" id="gb-o" onclick="selG('อื่นๆ')">⚧ อื่นๆ</button></div></div>
+      <div class="fg">
+        <label class="fl">เวลานัด (24 ชั่วโมง)</label>
+        <div class="t24r"><select id="ap-h"><option value="">ชั่วโมง</option></select><span class="tc">:</span><select id="ap-m"><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div>
+        <div class="tq-grid" id="tq-grid"></div>
+      </div>
+      <div class="fg"><label class="fl">ชื่อ-นามสกุลผู้ป่วย</label><input type="text" class="fi" id="ap-name" placeholder="เช่น นายสมชาย ใจดี"/></div>
+      <div class="fg"><label class="fl">หัตถการที่ทำ</label><input type="text" class="fi" id="ap-proc" placeholder="เช่น ฉีด triamcinolone"/></div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">จำนวนนัดวันที่เลือก: <strong id="ap-cnt">0</strong> / 10</div>
+      <button class="btn btn-purple btn-w" id="ap-sub" onclick="addAppt()">บันทึกการนัด</button>
+    </div>
+    <div class="appt-list-area">
+      <div class="card" style="padding:13px 16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="dnbtn" onclick="chApptDate(-1)">◀</button>
+            <div class="ddisp" id="ap-ddisp"></div>
+            <button class="dnbtn" onclick="chApptDate(1)">▶</button>
+          </div>
+          <span style="background:var(--purple-lt);color:var(--purple);padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;" id="ap-badge">0/10</span>
+        </div>
+      </div>
+      <div id="ap-list"><div class="empty">กำลังโหลด...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: HISTORY -->
+<div class="pg" id="pg-hist">
+  <div class="pg-title">📊 ประวัติการให้บริการ</div>
+  <div class="card"><div class="hs-bar">
+    <div class="fg"><label class="fl">วันที่เริ่มต้น</label><input type="date" class="fi" id="hf"/></div>
+    <div class="fg"><label class="fl">วันที่สิ้นสุด</label><input type="date" class="fi" id="ht"/></div>
+    <button class="btn btn-out btn-sm" onclick="histToday()">วันนี้</button>
+    <button class="btn btn-purple btn-sm" onclick="loadHist()">🔍 ค้นหา</button>
+  </div></div>
+  <div class="hf-bar" id="hf-bar">
+    <label>เพศ</label><select id="hfg" onchange="applyHF()"><option value="">ทั้งหมด</option><option value="ชาย">♂ ชาย</option><option value="หญิง">♀ หญิง</option><option value="อื่นๆ">⚧ อื่นๆ</option></select>
+    <label>หัตถการ</label><input type="text" id="hfp" placeholder="ค้นหา..." oninput="applyHF()"/>
+    <label>ประเภท</label><select id="hft" onchange="applyHF()"><option value="">ทั้งหมด</option><option value="A">Walk-in A</option><option value="B">นัด B</option></select>
+    <button class="btn btn-out btn-sm" onclick="clearHF()">✕ ล้าง</button>
+    <span class="fcount" id="hfc"></span>
+  </div>
+  <div class="hsum" id="hsum">
+    <div><div class="sc-n" id="hs-t" style="color:var(--purple)">0</div><div class="sc-l">ทั้งหมด</div></div>
+    <div><div class="sc-n" id="hs-a" style="color:var(--blue)">0</div><div class="sc-l">Walk-in A</div></div>
+    <div><div class="sc-n" id="hs-b" style="color:var(--green)">0</div><div class="sc-l">นัด B</div></div>
+    <div><div class="sc-n" id="hs-d" style="color:var(--teal)">0</div><div class="sc-l">เสร็จ</div></div>
+    <div><div class="sc-n" id="hs-m" style="color:var(--blue)">0</div><div class="sc-l">ชาย</div></div>
+    <div><div class="sc-n" id="hs-f" style="color:var(--pink)">0</div><div class="sc-l">หญิง</div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="htbl-wrap"><table class="htbl">
+      <thead><tr><th>วันที่</th><th>หมายเลข</th><th>ประเภท</th><th>เพศ</th><th>ชื่อ</th><th>หัตถการ</th><th>เวลานัด</th><th>รับคิว</th><th>ลงทะเบียน</th><th>ตรวจเสร็จ</th><th>สถานะ</th></tr></thead>
+      <tbody id="h-tb"><tr><td colspan="11" class="empty">เลือกช่วงวันที่แล้วกด "ค้นหา"</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- PAGE: USERS (admin only) -->
+<div class="pg" id="pg-users">
+  <div class="pg-title">👥 จัดการผู้ใช้งาน</div>
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:14px;flex:1;min-height:0;">
+    <div class="card" style="height:fit-content;">
+      <div class="card-title">➕ เพิ่มผู้ใช้งาน</div>
+      <div class="fg"><label class="fl">ชื่อผู้ใช้ (Username)</label><input class="fi" id="u-user" placeholder="ชื่อ login"/></div>
+      <div class="fg"><label class="fl">รหัสผ่าน</label><input type="password" class="fi" id="u-pass" placeholder="password"/></div>
+      <div class="fg"><label class="fl">ชื่อ-นามสกุล</label><input class="fi" id="u-name" placeholder="ชื่อจริง"/></div>
+      <div class="fg">
+        <label class="fl">บทบาท</label>
+        <select class="fi" id="u-role">
+          <option value="staff">เจ้าหน้าที่ (Staff)</option>
+          <option value="doctor">แพทย์ (Doctor)</option>
+          <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+        </select>
+      </div>
+      <button class="btn btn-blue btn-w" onclick="addUser()">เพิ่มผู้ใช้งาน</button>
+    </div>
+    <div class="card" style="overflow:hidden;">
+      <div class="card-title">รายชื่อผู้ใช้งาน</div>
+      <div style="overflow-x:auto;">
+        <table class="user-table" id="u-table">
+          <thead><tr><th>Username</th><th>ชื่อ</th><th>บทบาท</th><th></th></tr></thead>
+          <tbody id="u-body"><tr><td colspan="4" class="empty">กำลังโหลด...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SETTINGS -->
+<div class="pg" id="pg-cfg">
+  <div class="pg-title">⚙️ ตั้งค่าระบบ</div>
+  <div class="card" style="max-width:500px;">
+    <div class="card-title">การเชื่อมต่อ</div>
+    <div class="fg"><label class="fl">Google Apps Script URL</label><input class="fi" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec"/></div>
+    <div class="fg"><label class="fl">ชื่อคลินิก</label><input class="fi" id="cfg-n" placeholder="เช่น คลินิกผิวหนัง"/></div>
+    <div class="fg"><label class="fl">ขนาดกระดาษ Thermal</label><select class="fi" id="cfg-p"><option value="58mm">58mm</option><option value="80mm">80mm</option></select></div>
+    <button class="btn btn-blue" onclick="saveCfg()">💾 บันทึก</button>
+    <div class="ok-msg" id="ok-msg">✅ บันทึกแล้ว!</div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- TOAST / MODAL / SPINNER -->
+<div id="toast"></div>
+<div id="mlov"><div class="mlbox"><h3 id="ml-t"></h3><p id="ml-m"></p><div class="mlr"><button class="btn btn-out" onclick="closeMl()">ยกเลิก</button><button class="btn btn-red" id="ml-ok">ยืนยัน</button></div></div></div>
+<div id="spin"><div class="sp"></div></div>
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════
+const GAS_DEFAULT = 'https://script.google.com/macros/s/AKfycbxCJayzpyoXwW_4_y7Di9rntsBLzx5eSQsKA2tQ40KSLOjbmiqi_FwByGEdcyYgVLif/exec';
+let GAS     = GAS_DEFAULT; // always use this URL
+let CLINIC  = localStorage.getItem('clinic_name') || 'คลินิก';
+let PAPER   = localStorage.getItem('paper_size')  || '58mm';
+
+const MO = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TD = {'0':'ศูนย์','1':'หนึ่ง','2':'สอง','3':'สาม','4':'สี่','5':'ห้า','6':'หก','7':'เจ็ด','8':'แปด','9':'เก้า'};
+const TQ_SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+                  '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30',
+                  '17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'];
+
+// ── Auth state ──
+let currentUser = null; // {role, name}
+
+// ── Queue state ──
+let Q = [], ST = {}, rCalling=null, dCalling=null;
+let apptDate=new Date(), apptData=[], gSel='';
+let histAll=[], dispOn=false, lastReg=null, lastDoc=null;
+let flashTmr=null, pollTmr=null;
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  applyClinic();
+  buildHours();
+  buildTQ();
+  setInterval(tick, 1000); tick();
+  document.getElementById('ap-date').value = iso(new Date());
+  document.getElementById('ap-date').addEventListener('change', e => {
+    apptDate = new Date(e.target.value+'T12:00:00');
+    updApptDisp(); loadAppts();
+  });
+  histToday();
+  startPoll(); // start polling immediately so display is always live
+});
+
+function applyClinic() {
+  ['sb-name','kv-name','dp-name','role-clinic-name','pz-c'].forEach(id=>setTxt(id,CLINIC));
+}
+function setTxt(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function dtTh(s){if(!s)return'';const[y,mo,d]=String(s).split('-');return `${parseInt(d)} ${MO[parseInt(mo)]} ${parseInt(y)+543}`;}
+function tick(){
+  const n=new Date();
+  const ds=`${n.getDate()} ${MO[n.getMonth()+1]} ${n.getFullYear()+543}`;
+  ['kv-date','dp-date'].forEach(id=>setTxt(id,ds));
+  setTxt('dp-clock',n.toTimeString().slice(0,8));
+}
+
+// ══════════════════════════════════════════
+//  ROLE SELECTOR
+// ══════════════════════════════════════════
+function enterAsStaff() {
+  currentUser = {role:'staff', name:'เจ้าหน้าที่'};
+  document.getElementById('role-screen').classList.add('hide');
+  buildSidebar();
+  document.getElementById('sb-user').textContent = 'เจ้าหน้าที่';
+  document.getElementById('shell').style.display = 'flex';
+  go('reg');
+}
+
+function enterAsPatient() {
+  currentUser = {role:'patient', name:'ผู้รับบริการ'};
+  document.getElementById('role-screen').classList.add('hide');
+  document.getElementById('kiosk-view').classList.add('on');
+}
+
+function buildSidebar() {
+  const nav = document.getElementById('sb-nav');
+  const pages = [
+    {id:'display',icon:'📺',label:'จอแสดงผล'},
+    {id:'reg',    icon:'📋',label:'โต๊ะลงทะเบียน'},
+    {id:'doc',    icon:'🩺',label:'ห้องตรวจ'},
+    {id:'appt',   icon:'📅',label:'นัดหัตถการ'},
+    {id:'hist',   icon:'📊',label:'ประวัติ'},
+    {id:'cfg',    icon:'⚙️',label:'ตั้งค่า'},
+  ];
+  nav.innerHTML = pages.map(p=>`<button class="sb-btn" id="nav-${p.id}" onclick="go('${p.id}')"><span>${p.icon}</span>${p.label}</button>`).join('');
+}
+
+function logout() {
+  currentUser = null;
+  Q=[]; ST={}; rCalling=null; dCalling=null;
+  document.getElementById('kiosk-view').classList.remove('on');
+  document.getElementById('shell').style.display='none';
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('role-screen').classList.remove('hide');
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function go(page) {
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('on'));
+  const el=document.getElementById('pg-'+page);
+  if(el) el.classList.add('on');
+  const nb=document.getElementById('nav-'+page);
+  if(nb) nb.classList.add('on');
+  if(page==='appt'){updApptDisp();loadAppts();}
+  if(page==='hist') histToday();
+  if(page==='users') loadUsers();
+}
+
+// ══════════════════════════════════════════
+//  API
+// ══════════════════════════════════════════
+async function GET(params) {
+  const u=new URL(GAS);
+  Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  const r=await fetch(u.toString(),{redirect:'follow'});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+async function POST(data) {
+  const r=await fetch(GAS,{method:'POST',redirect:'follow',body:JSON.stringify(data)});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+// ══════════════════════════════════════════
+//  POLL
+// ══════════════════════════════════════════
+function startPoll(){
+  if(pollTmr) clearInterval(pollTmr);
+  poll(); pollTmr=setInterval(poll, 2500);
+}
+
+async function poll(){
+  try {
+    const d=await GET({action:'getState'});
+    if(d.success){setConn(true);onState(d);}
+    else setConn(false);
+  } catch {setConn(false);}
+}
+
+function setConn(ok){
+  document.getElementById('cdot').className='cdot'+(ok?' ok':'');
+  document.getElementById('ctxt').textContent=ok?'เชื่อมต่อแล้ว':'ขาดการเชื่อมต่อ';
+}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+function onState(d){
+  Q=d.queues||[]; ST=d.stats||{};
+  const rc=d.currentRegCall, dc=d.currentDocCall;
+
+  // Speech for display page
+  if(dispOn){
+    if(rc&&rc!==lastReg){speak(rc,'reg');pulse('dp-rn');lastReg=rc;}
+    if(dc&&dc!==lastDoc){speak(dc,'doc');pulse('dp-dn');lastDoc=dc;}
+    if(!rc)lastReg=null; if(!dc)lastDoc=null;
+  }
+
+  // Display panels
+  updDP('dp-rn','dp-rs',rc,'#38bdf8','ขอเชิญที่โต๊ะลงทะเบียน');
+  updDP('dp-dn','dp-ds',dc,'var(--gold)','ขอเชิญเข้าห้องตรวจ');
+  renderDpBoard();
+
+  // Reg & Doc pages
+  rCalling=rc; updReg(rc);
+  dCalling=dc; updDoc(dc);
+}
+
+function updDP(nid,sid,calling,col,sub){
+  const nel=document.getElementById(nid),sel=document.getElementById(sid);
+  if(calling){nel.textContent=calling;nel.className='dp-num';sel.textContent=sub;}
+  else{nel.textContent='—';nel.className='dp-num empty';sel.textContent='';}
+}
+
+function renderDpBoard(){
+  const active=['waiting','calling_reg','registered','calling_doc'];
+  const ord={calling_reg:0,calling_doc:1,registered:2,waiting:3};
+  const list=[...Q].filter(q=>active.includes(q.status)).sort((a,b)=>(ord[a.status]||9)-(ord[b.status]||9));
+  const col={calling_reg:'#38bdf8',calling_doc:'var(--gold)',registered:'#34d399',waiting:'#64748b'};
+  const lbl={waiting:'รอ',calling_reg:'เรียก→ลงทะเบียน',registered:'รอห้องตรวจ',calling_doc:'เรียก→ห้องตรวจ'};
+  const el=document.getElementById('dp-rows');
+  if(!list.length){el.innerHTML='<div style="color:#64748b;text-align:center;padding:18px;">ยังไม่มีคิว</div>';return;}
+  el.innerHTML=list.map(q=>`
+    <div class="dp-brow">
+      <span style="font-weight:800;color:${q.type==='A'?'#38bdf8':'#34d399'}">${q.queueNum}</span>
+      <span style="color:#64748b;font-size:.8rem">${q.type==='A'?'Walk-in':'นัด'}</span>
+      <span style="color:${col[q.status]||'#64748b'};font-size:.8rem;font-weight:700">${lbl[q.status]||''}</span>
+      <span style="color:#64748b;font-size:.78rem">${(q.takeTime||'').slice(0,5)}</span>
+      <span style="color:#94a3b8;font-size:.76rem">${q.patientName||''}${q.procedure?' · '+q.procedure:''}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+//  DISPLAY
+// ══════════════════════════════════════════
+function startDisp(){
+  const u=new SpeechSynthesisUtterance('');window.speechSynthesis.speak(u);
+  document.getElementById('dp-start').style.display='none';
+  dispOn=true;lastReg=null;lastDoc=null;
+}
+
+function pulse(id){
+  const el=document.getElementById(id);
+  el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+  setTimeout(()=>el.classList.remove('pulse'),700);
+}
+
+// ══════════════════════════════════════════
+//  SPEECH
+// ══════════════════════════════════════════
+function speak(qn, dest) {
+  const px=qn[0]==='A'?'เอ':'บี';
+  const dg=qn.slice(1).split('').map(d=>TD[d]||d).join(' ');
+  const tx=dest==='reg'?'ที่โต๊ะลงทะเบียนค่ะ':'พบแพทย์ที่ห้องตรวจค่ะ';
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(`ขอเชิญหมายเลข ${px} ${dg} ${tx}`);
+  u.lang='th-TH';u.rate=0.82;u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+
+// ══════════════════════════════════════════
+//  KIOSK — TAKE QUEUE
+// ══════════════════════════════════════════
+async function takeA(){
+  sp(true);
+  try{
+    const r=await POST({action:'takeQueue',queueType:'A',gender:''});
+    sp(false);
+    if(r.success) showFlash(r.queueNum,false,null);
+    else toast('❌ เกิดข้อผิดพลาด: '+(r.error||''));
+  }catch(e){sp(false);toast('❌ เชื่อมต่อไม่ได้: '+e.message);}
+}
+
+async function openBSelect(){
+  document.getElementById('bselect').classList.add('on');
+  document.getElementById('bs-list').innerHTML='<div class="empty">กำลังโหลด...</div>';
+  try{
+    const r=await GET({action:'getAppointments'});
+    if(!r.success||!r.appointments.length){
+      document.getElementById('bs-list').innerHTML='<div class="empty">ไม่มีรายการนัดวันนี้</div>';return;
+    }
+    document.getElementById('bs-list').innerHTML=r.appointments.map(a=>`
+      <div class="bcard${a.status!=='scheduled'?' dis':''}" onclick="checkInB('${a.id}')">
+        <div class="btime">${a.time}</div>
+        <div><div class="bname">${a.patientName}</div><div class="bproc">${a.procedure}</div></div>
+        <span class="bst" style="${a.status==='scheduled'?'background:var(--green-lt);color:var(--green)':a.status==='arrived'?'background:var(--blue-lt);color:var(--blue)':'background:var(--red-lt);color:var(--red)'}">
+          ${a.status==='scheduled'?'รอเช็คอิน':a.status==='arrived'?'✅ เช็คอินแล้ว':'❌ ไม่มา'}
+        </span>
+      </div>`).join('');
+  }catch(e){document.getElementById('bs-list').innerHTML=`<div class="empty">เกิดข้อผิดพลาด: ${e.message}</div>`;}
+}
+
+function closeBSelect(){document.getElementById('bselect').classList.remove('on');}
+
+async function checkInB(id){
+  sp(true);
+  try{
+    const r=await POST({action:'checkInB',apptId:id});
+    sp(false);
+    if(r.success){closeBSelect();showFlash(r.queueNum,true,{patientName:r.patientName,procedure:r.procedure,apptTime:r.apptTime});}
+    else if(r.error==='already_checked_in')toast(`✅ เช็คอินแล้ว คิว ${r.queueNum}`);
+    else if(r.error==='marked_absent')toast('❌ บันทึกว่าไม่มา ติดต่อเจ้าหน้าที่');
+    else toast('❌ '+(r.error||'เกิดข้อผิดพลาด'));
+  }catch(e){sp(false);toast('❌ เชื่อมต่อไม่ได้: '+e.message);}
+}
+
+// Flash queue number 3 seconds then auto-close
+function showFlash(qn, isB, info){
+  const now=new Date();
+  const tm=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const dt=`${now.getDate()} ${MO[now.getMonth()+1]} ${now.getFullYear()+543}`;
+
+  document.getElementById('fl-clinic').textContent=CLINIC;
+  const typeEl=document.getElementById('fl-type');
+  typeEl.textContent=isB?'📋 นัดหัตถการ':'🪑 Walk-in';
+  typeEl.style.cssText=isB?'background:var(--green-lt);color:var(--green)':'background:var(--blue-lt);color:var(--blue)';
+  const numEl=document.getElementById('fl-num');
+  numEl.textContent=qn;
+  numEl.className='flash-num '+(isB?'flash-num-b':'flash-num-a');
+  const barEl=document.getElementById('fl-bar');
+  barEl.style.background=isB?'var(--green)':'var(--blue)';
+
+  const subParts=[`รับคิวเวลา ${tm} น.`];
+  if(info?.patientName) subParts.unshift(info.patientName);
+  document.getElementById('fl-sub').textContent=subParts.join(' · ');
+
+  // Fill print zone
+  document.getElementById('pz-d').textContent=dt;
+  document.getElementById('pz-t').textContent=isB?'นัดหัตถการ (B)':'Walk-in (A)';
+  document.getElementById('pz-n').textContent=qn;
+  document.getElementById('pz-nm').textContent=info?.patientName?`ชื่อ: ${info.patientName}`:'';
+  document.getElementById('pz-pr').textContent=info?.procedure?`หัตถการ: ${info.procedure}`:'';
+  document.getElementById('pz-at').textContent=info?.apptTime?`เวลานัด: ${info.apptTime}`:'';
+  document.getElementById('pz-tm').textContent=`รับคิวเวลา: ${tm} น.`;
+
+  document.getElementById('qnum-flash').classList.add('on');
+  barEl.style.width='100%';
+  let rem=5;
+  clearInterval(flashTmr);
+  flashTmr=setInterval(()=>{
+    rem--;
+    barEl.style.width=(rem/5*100)+'%';
+    if(rem<=0){clearInterval(flashTmr);document.getElementById('qnum-flash').classList.remove('on');}
+  },1000);
+
+  // Silent print (no preview dialog - goes directly to printer if connected)
+  setTimeout(()=>window.print(),300);
+  // Refresh poll
+  setTimeout(()=>poll(),500);
+}
+
+// ══════════════════════════════════════════
+//  REGISTRATION
+// ══════════════════════════════════════════
+function updReg(calling){
+  const nel=document.getElementById('reg-num');
+  if(calling){
+    nel.textContent=calling;nel.className='cnum';
+    const q=Q.find(x=>x.queueNum===calling);
+    document.getElementById('reg-det').textContent=q?.patientName?`👤 ${q.patientName}`:'';
+  }else{nel.textContent='—';nel.className='cnum cnum-e';document.getElementById('reg-det').textContent='';}
+
+  const hc=!!calling,hw=Q.some(q=>q.status==='waiting');
+  document.getElementById('r-next').disabled=!hw;
+  document.getElementById('r-recall').disabled=!hc;
+  document.getElementById('r-done').disabled=!hc;
+  document.getElementById('r-skip').disabled=!hc;
+  setTxt('r-sw',ST.waiting||0);setTxt('r-sr',ST.registered||0);
+  setTxt('r-sd',ST.done||0);setTxt('r-st',ST.total||0);
+
+  const wait=Q.filter(q=>q.status==='waiting').sort(sortQ);
+  document.getElementById('r-wait').innerHTML=wait.length?wait.map(q=>`
+    <div class="qi">
+      <span class="qn ${q.type==='A'?'qn-a':'qn-b'}">${q.queueNum}</span>
+      <div class="qi-info"><div class="nm">${q.patientName||(q.type==='A'?'Walk-in':'นัด')}</div><div class="dt">${q.procedure||''}${q.apptTime?' · '+q.apptTime:''}</div></div>
+      <span class="qi-tm">${(q.takeTime||'').slice(0,5)}</span>
+      <button class="cbtn cbtn-b" onclick="rCallSpec('${q.queueNum}')">เรียก</button>
+    </div>`).join(''):'<div class="empty">ไม่มีคิวรอ</div>';
+
+  const reg=Q.filter(q=>q.status==='registered').sort(sortQ);
+  document.getElementById('r-done').innerHTML=reg.length?reg.map(q=>`
+    <div class="ri"><span class="rn">${q.queueNum}</span><span>${q.patientName||''}</span><span class="tsm">${(q.regDoneTime||'').slice(0,5)}</span></div>`).join(''):'<div class="empty" style="padding:10px;font-size:.83rem;">ยังไม่มี</div>';
+}
+
+async function rNext(){
+  const r=await POST({action:'callReg',queueNum:null});
+  if(r.success){speak(r.queueNum,'reg');toast(`📣 เรียกคิว ${r.queueNum}`);await poll();}
+  else toast(r.error==='no_waiting'?'ไม่มีคิวรอ':'ผิดพลาด: '+(r.error||''));
+}
+async function rCallSpec(n){
+  const r=await POST({action:'callReg',queueNum:n});
+  if(r.success){speak(r.queueNum,'reg');toast(`📣 เรียกคิว ${r.queueNum}`);await poll();}
+  else toast('ผิดพลาด');
+}
+function rRecall(){if(rCalling){speak(rCalling,'reg');toast(`🔁 เรียกซ้ำ ${rCalling}`);}}
+async function rDone(){
+  if(!rCalling)return;
+  const r=await POST({action:'doneReg',queueNum:rCalling});
+  if(r.success){toast(`✅ ${rCalling} ส่งไปห้องตรวจแล้ว`);await poll();}else toast('ผิดพลาด');
+}
+function rSkip(){if(!rCalling)return;modal('ข้ามคิว '+rCalling,'คิวจะถูกส่งกลับไปรอ',async()=>{const r=await POST({action:'skipQueue',queueNum:rCalling});if(r.success){toast('ข้ามแล้ว');await poll();}});}
+
+// ══════════════════════════════════════════
+//  DOCTOR
+// ══════════════════════════════════════════
+function updDoc(calling){
+  const nel=document.getElementById('doc-num');
+  if(calling){
+    nel.textContent=calling;nel.className='cnum';
+    const q=Q.find(x=>x.queueNum===calling);
+    document.getElementById('doc-det').innerHTML=q?`${q.patientName?`👤 ${q.patientName}<br>`:''}${q.procedure?`🔬 ${q.procedure}<br>`:''}${q.apptTime?`🕐 นัด ${q.apptTime}`:''}` :'';
+  }else{nel.textContent='—';nel.className='cnum cnum-e';document.getElementById('doc-det').textContent='';}
+
+  const hc=!!calling,hr=Q.some(q=>q.status==='registered');
+  document.getElementById('d-next').disabled=!hr;
+  document.getElementById('d-recall').disabled=!hc;
+  document.getElementById('d-done').disabled=!hc;
+  document.getElementById('d-skip').disabled=!hc;
+  setTxt('d-sr',ST.registered||0);setTxt('d-sw',ST.waiting||0);
+  setTxt('d-sd',ST.done||0);setTxt('d-st',ST.total||0);
+
+  const reg=Q.filter(q=>q.status==='registered').sort(sortQ);
+  document.getElementById('d-wait').innerHTML=reg.length?reg.map(q=>`
+    <div class="qi">
+      <span class="qn ${q.type==='A'?'qn-a':'qn-b'}">${q.queueNum}</span>
+      <div class="qi-info"><div class="nm">${q.patientName||(q.type==='A'?'Walk-in':'นัด')}</div><div class="dt">${q.procedure||''}${q.apptTime?' · นัด '+q.apptTime:''}</div></div>
+      <span class="qi-tm">${(q.regDoneTime||'').slice(0,5)}</span>
+      <button class="cbtn cbtn-t" onclick="dCallSpec('${q.queueNum}')">เรียก</button>
+    </div>`).join(''):'<div class="empty">ไม่มีคิวรอตรวจ</div>';
+
+  const done=[...Q.filter(q=>q.status==='done')].reverse();
+  document.getElementById('d-done').innerHTML=done.length?done.map(q=>`
+    <div class="di"><span class="dn">${q.queueNum}</span><span>${q.patientName||''}</span><span class="tsm">${(q.docDoneTime||'').slice(0,5)}</span></div>`).join(''):'<div class="empty" style="padding:10px;font-size:.83rem;">ยังไม่มี</div>';
+}
+
+async function dNext(){
+  const r=await POST({action:'callDoc',queueNum:null});
+  if(r.success){speak(r.queueNum,'doc');toast(`📣 เรียกคิว ${r.queueNum} เข้าห้องตรวจ`);await poll();}
+  else toast(r.error==='no_registered'?'ไม่มีคิวรอตรวจ':'ผิดพลาด');
+}
+async function dCallSpec(n){
+  const r=await POST({action:'callDoc',queueNum:n});
+  if(r.success){speak(r.queueNum,'doc');toast(`📣 เรียกคิว ${r.queueNum}`);await poll();}
+  else toast('ผิดพลาด');
+}
+function dRecall(){if(dCalling){speak(dCalling,'doc');toast(`🔁 เรียกซ้ำ ${dCalling}`);}}
+async function dDone(){
+  if(!dCalling)return;
+  const r=await POST({action:'doneDoc',queueNum:dCalling});
+  if(r.success){toast(`✅ ตรวจเสร็จ ${dCalling}`);await poll();}else toast('ผิดพลาด');
+}
+function dSkip(){if(!dCalling)return;modal('ข้ามคิว '+dCalling,'คิวจะถูกส่งกลับไปรอ',async()=>{const r=await POST({action:'skipQueue',queueNum:dCalling});if(r.success){toast('ข้ามแล้ว');await poll();}});}
+
+// ══════════════════════════════════════════
+//  APPOINTMENTS
+// ══════════════════════════════════════════
+function buildHours(){const s=document.getElementById('ap-h');for(let h=8;h<=22;h++){const o=document.createElement('option');o.value=String(h).padStart(2,'0');o.textContent=String(h).padStart(2,'0');s.appendChild(o);}}
+function buildTQ(){document.getElementById('tq-grid').innerHTML=TQ_SLOTS.map(t=>`<button class="tq" data-t="${t}" onclick="pickT('${t}')">${t}</button>`).join('');}
+function pickT(t){const[h,m]=t.split(':');document.getElementById('ap-h').value=h;document.getElementById('ap-m').value=m;document.querySelectorAll('.tq').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));}
+function selG(g){gSel=g;document.getElementById('gb-m').className='gb'+(g==='ชาย'?' sel-m':'');document.getElementById('gb-f').className='gb'+(g==='หญิง'?' sel-f':'');document.getElementById('gb-o').className='gb'+(g==='อื่นๆ'?' sel-o':'');}
+
+function updApptDisp(){const ds=iso(apptDate);document.getElementById('ap-ddisp').textContent=dtTh(ds);document.getElementById('ap-date').value=ds;}
+function chApptDate(d){apptDate.setDate(apptDate.getDate()+d);updApptDisp();loadAppts();}
+
+async function loadAppts(){
+  const ds=iso(apptDate);
+  try{
+    const r=await GET({action:'getAppointments',date:ds});
+    if(!r.success){toast('โหลดไม่ได้');return;}
+    apptData=r.appointments;
+    const cnt=apptData.length;
+    setTxt('ap-cnt',cnt);
+    document.getElementById('ap-badge').textContent=`${cnt}/10`;
+    document.getElementById('ap-sub').disabled=cnt>=10;
+    const taken=apptData.map(a=>a.time);
+    document.querySelectorAll('.tq').forEach(b=>{b.classList.toggle('taken',taken.includes(b.dataset.t));b.disabled=taken.includes(b.dataset.t);if(taken.includes(b.dataset.t))b.classList.remove('sel');});
+    renderApptList(apptData,ds);
+  }catch{toast('ผิดพลาด');}
+}
+
+function renderApptList(list,ds){
+  const el=document.getElementById('ap-list');
+  if(!list.length){el.innerHTML=`<div class="empty">ไม่มีรายการนัดวันที่ ${dtTh(ds)}</div>`;return;}
+  el.innerHTML=list.map(a=>`
+    <div class="acard status-${a.status}" style="margin-bottom:8px;">
+      <span class="ast ast-${a.status==='scheduled'?'s':a.status==='arrived'?'a':'x'}">${a.status==='scheduled'?'รอ':a.status==='arrived'?'✅ มาแล้ว':'❌ ไม่มา'}</span>
+      <div class="atb">${a.time}</div>
+      <div>
+        <div style="font-weight:700;">${a.patientName}</div>
+        <div style="font-size:.83rem;color:var(--muted);">🔬 ${a.procedure}</div>
+        ${a.gender?`<span class="gc ${a.gender==='ชาย'?'gc-m':a.gender==='หญิง'?'gc-f':'gc-o'}">${a.gender}</span>`:''}
+        ${a.queueNum?`<div style="font-size:.78rem;color:var(--blue);font-weight:700;">คิว ${a.queueNum}</div>`:''}
+      </div>
+      <div class="aacts">
+        ${a.status==='scheduled'?`<button class="pill pill-r" onclick="markAbs('${a.id}')">ไม่มา</button><button class="pill pill-gray" onclick="delAppt('${a.id}','${a.patientName}')">ลบ</button>`:''}
+        ${a.status==='absent'?`<button class="pill pill-g" onclick="markSch('${a.id}')">คืนนัด</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+async function addAppt(){
+  const date=iso(apptDate),h=document.getElementById('ap-h').value,m=document.getElementById('ap-m').value;
+  const time=h?`${h}:${m}`:'',name=document.getElementById('ap-name').value.trim();
+  const proc=document.getElementById('ap-proc').value.trim(),gender=gSel;
+  if(!time){toast('⚠️ เลือกเวลา');return;}
+  if(!name){toast('⚠️ ใส่ชื่อผู้ป่วย');return;}
+  if(!proc){toast('⚠️ ระบุหัตถการ');return;}
+  if(!gender){toast('⚠️ เลือกเพศ');return;}
+  if(apptData.length>=10){toast('❌ นัดครบ 10 คน');return;}
+  const btn=document.getElementById('ap-sub');btn.disabled=true;btn.textContent='กำลังบันทึก...';
+  try{
+    const r=await POST({action:'addAppointment',date,time,patientName:name,procedure:proc,gender});
+    if(r.success){toast(`✅ บันทึกนัด ${name} เวลา ${time}`);document.getElementById('ap-name').value='';document.getElementById('ap-proc').value='';document.getElementById('ap-h').value='';document.getElementById('ap-m').value='00';selG('');document.querySelectorAll('.tq').forEach(b=>b.classList.remove('sel'));loadAppts();}
+    else if(r.error==='max_reached')toast('❌ นัดครบ 10 คน');
+    else toast('ผิดพลาด: '+(r.error||''));
+  }catch{toast('เชื่อมต่อไม่ได้');}
+  btn.disabled=false;btn.textContent='บันทึกการนัด';
+}
+
+async function markAbs(id){const r=await POST({action:'markAbsent',apptId:id});if(r.success){toast('บันทึกว่าไม่มา');loadAppts();}else toast('ผิดพลาด');}
+async function markSch(id){const r=await POST({action:'markScheduled',apptId:id});if(r.success){toast('คืนสถานะแล้ว');loadAppts();}else toast('ผิดพลาด');}
+function delAppt(id,n){modal(`ลบนัด "${n}"?`,'ลบถาวร',async()=>{const r=await POST({action:'deleteAppointment',apptId:id});if(r.success){toast('ลบแล้ว');loadAppts();}});}
+
+// ══════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════
+function histToday(){const t=iso(new Date());document.getElementById('hf').value=t;document.getElementById('ht').value=t;}
+async function loadHist(){
+  const from=document.getElementById('hf').value,to=document.getElementById('ht').value;
+  if(!from||!to){toast('⚠️ เลือกช่วงวันที่');return;}
+  document.getElementById('h-tb').innerHTML='<tr><td colspan="11" class="empty">กำลังโหลด...</td></tr>';
+  document.getElementById('hf-bar').style.display='none';document.getElementById('hsum').style.display='none';
+  try{const r=await GET({action:'getHistory',from,to});if(!r.success){toast('โหลดไม่ได้');return;}histAll=r.records;document.getElementById('hf-bar').style.display='flex';applyHF();}
+  catch{toast('ผิดพลาด');}
+}
+function applyHF(){
+  const g=document.getElementById('hfg').value,p=document.getElementById('hfp').value.trim().toLowerCase(),t=document.getElementById('hft').value;
+  const f=histAll.filter(r=>{if(g&&r.gender!==g)return false;if(p&&!(r.procedure||'').toLowerCase().includes(p))return false;if(t&&r.type!==t)return false;return true;});
+  document.getElementById('hfc').textContent=(g||p||t)?`แสดง ${f.length} / ${histAll.length} รายการ`:'';
+  renderHist(f);
+}
+function clearHF(){['hfg','hft'].forEach(id=>document.getElementById(id).value='');document.getElementById('hfp').value='';document.getElementById('hfc').textContent='';renderHist(histAll);}
+function renderHist(rec){
+  const sum=document.getElementById('hsum');
+  if(!rec.length){sum.style.display='none';document.getElementById('h-tb').innerHTML='<tr><td colspan="11" class="empty">ไม่พบข้อมูล</td></tr>';return;}
+  sum.style.display='flex';
+  setTxt('hs-t',rec.length);setTxt('hs-a',rec.filter(r=>r.type==='A').length);setTxt('hs-b',rec.filter(r=>r.type==='B').length);
+  setTxt('hs-d',rec.filter(r=>r.status==='done').length);setTxt('hs-m',rec.filter(r=>r.gender==='ชาย').length);setTxt('hs-f',rec.filter(r=>r.gender==='หญิง').length);
+  const fp=document.getElementById('hfp').value.trim().toLowerCase();
+  const s=[...rec].sort((a,b)=>String(a.date)<String(b.date)?-1:String(a.date)>String(b.date)?1:(a.takeTime||'').localeCompare(b.takeTime||''));
+  document.getElementById('h-tb').innerHTML=s.map(r=>{
+    const pt=r.procedure||'',ph=fp&&pt.toLowerCase().includes(fp)?pt.replace(new RegExp(fp,'gi'),m=>`<mark>${m}</mark>`):pt;
+    const gc=r.gender==='ชาย'?'gc-m':r.gender==='หญิง'?'gc-f':r.gender?'gc-o':'';
+    const sd=r.status==='done';
+    return`<tr>
+      <td>${dtTh(String(r.date))}</td>
+      <td style="font-weight:800;color:${r.type==='A'?'var(--blue)':'var(--green)'}">${r.queueNum}</td>
+      <td>${r.type==='A'?'Walk-in':'นัด'}</td>
+      <td>${r.gender?`<span class="gc ${gc}">${r.gender}</span>`:''}</td>
+      <td>${r.patientName||''}</td><td>${ph}</td><td>${r.apptTime||''}</td>
+      <td>${(r.takeTime||'').slice(0,5)}</td><td>${(r.regDoneTime||'').slice(0,5)}</td><td>${(r.docDoneTime||'').slice(0,5)}</td>
+      <td><span style="${sd?'background:var(--green-lt);color:var(--green)':'background:#f5f5f5;color:#9e9e9e'};display:inline-block;padding:3px 9px;border-radius:20px;font-size:.74rem;font-weight:700;">${sd?'เสร็จ':r.status}</span></td>
+    </tr>`;}).join('');
+}
+
+// ══════════════════════════════════════════
+//  USERS (admin)
+// ══════════════════════════════════════════
+async function loadUsers(){
+  try{
+    const r=await GET({action:'getUsers'});
+    if(!r.success){toast('โหลดไม่ได้');return;}
+    const roleLbl={admin:'Admin',doctor:'แพทย์',staff:'เจ้าหน้าที่'};
+    const rCls={admin:'role-admin',doctor:'role-doctor',staff:'role-staff'};
+    document.getElementById('u-body').innerHTML=r.users.map(u=>`
+      <tr>
+        <td><strong>${u.username}</strong></td>
+        <td>${u.name}</td>
+        <td><span class="role-badge ${rCls[u.role]||''}">${roleLbl[u.role]||u.role}</span></td>
+        <td><button class="pill pill-r" onclick="delUser('${u.id}','${u.username}')">ลบ</button></td>
+      </tr>`).join('');
+  }catch{toast('ผิดพลาด');}
+}
+
+async function addUser(){
+  const username=document.getElementById('u-user').value.trim();
+  const password=document.getElementById('u-pass').value;
+  const name=document.getElementById('u-name').value.trim();
+  const role=document.getElementById('u-role').value;
+  if(!username||!password||!name){toast('⚠️ กรุณากรอกข้อมูลให้ครบ');return;}
+  try{
+    const r=await POST({action:'addUser',username,password,name,role});
+    if(r.success){toast(`✅ เพิ่ม ${username} แล้ว`);document.getElementById('u-user').value='';document.getElementById('u-pass').value='';document.getElementById('u-name').value='';loadUsers();}
+    else toast('❌ '+(r.error||'ผิดพลาด'));
+  }catch{toast('เชื่อมต่อไม่ได้');}
+}
+
+function delUser(id,name){modal(`ลบผู้ใช้ "${name}"?`,'จะถูกลบถาวร',async()=>{const r=await POST({action:'deleteUser',userId:id});if(r.success){toast('ลบแล้ว');loadUsers();}});}
+
+// ══════════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════════
+function saveCfg(){
+  GAS=document.getElementById('cfg-url').value.trim()||GAS_DEFAULT;
+  CLINIC=document.getElementById('cfg-n').value.trim()||'คลินิก';
+  PAPER=document.getElementById('cfg-p').value;
+  localStorage.setItem('gas_url',GAS);localStorage.setItem('clinic_name',CLINIC);localStorage.setItem('paper_size',PAPER);
+  applyClinic();
+  const m=document.getElementById('ok-msg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);
+  startPoll();
+}
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function sortQ(a,b){if(a.type!==b.type)return a.type==='A'?-1:1;return parseInt(a.queueNum.slice(1))-parseInt(b.queueNum.slice(1));}
+function sp(on){document.getElementById('spin').classList.toggle('on',on);}
+function toast(msg,ms=2800){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms);}
+let _mc=null;
+function modal(title,msg,cb){document.getElementById('ml-t').textContent=title;document.getElementById('ml-m').textContent=msg;_mc=cb;document.getElementById('mlov').classList.add('on');document.getElementById('ml-ok').onclick=()=>{closeMl();cb&&cb();};}
+function closeMl(){document.getElementById('mlov').classList.remove('on');}
+</script>
+</body>
+</html>
